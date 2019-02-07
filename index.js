@@ -55,11 +55,22 @@ const channel = 'MPESA';
 const mode = 'USSD Push';
 
 
+/**
+ * @name currency
+ * @description Currency accepted for payment.
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ */
+const currency = 'TZS';
+
+
 /* expose */
 module.exports = exports = {
   country,
   provider,
   method,
   channel,
-  mode
+  mode,
+  currency
 };

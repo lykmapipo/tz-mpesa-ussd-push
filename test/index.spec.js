@@ -9,7 +9,8 @@ const {
   provider,
   method,
   channel,
-  mode
+  mode,
+  currency
 } = include(__dirname, '..');
 
 
@@ -37,5 +38,10 @@ describe('tz mpesa ussd push', () => {
   it('should use ussd push mode', () => {
     expect(mode).to.exist;
     expect(mode).to.be.equal('USSD Push');
+  });
+
+  it('should use tzs currency', () => {
+    expect(currency).to.exist;
+    expect(currency).to.be.equal('TZS');
   });
 });
