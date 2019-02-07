@@ -15,7 +15,11 @@ const {
 const DATE_FORMAT = 'YYYYMMDD HHmmss';
 const REQUEST_HEADER_TAG = 'envelope.header';
 const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
-
+const $ = {
+  'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
+  'xmlns:soap': 'http://www.4cgroup.co.za/soapauth',
+  'xmlns:gen': 'http://www.4cgroup.co.za/genericsoap'
+};
 
 /**
  * @name country
@@ -109,7 +113,7 @@ const transformValue = item => {
 
   // transform string
   if (type === 'String' && value) {
-    value = value === 'null' ? undefined : String(value);
+    value = value === 'null' ? undefined : value;
     return value;
   }
 
@@ -151,15 +155,17 @@ const parseRequest = (xml, done) => {
 
     // obtain and transform request data
     const items = _.get(json, REQUEST_DATA_TAG, []);
-    const body = _.reduce(items, (accumulator, item) => {
+    const request = _.reduce(items, (accumulator, item) => {
       const value = {};
       const key = _.camelCase(item.name);
       value[key] = transformValue(item);
       return _.merge({}, accumulator, value);
     }, {});
 
+    // TODO parse response?
+
     // return request
-    return done(null, { header, body });
+    return done(null, { header, request });
   });
 };
 
@@ -183,9 +189,59 @@ const parseRequest = (xml, done) => {
 const parseTransactionResult = (xml, done) => parseRequest(xml, done);
 
 
-const buildRequest = (json, done) => {
-  // prepare build options
-  jsonToXml(json, done);
+/**
+ * @function buildRequest
+ * @name buildRequest
+ * @description Build and convert given json payload to ussd push xml request
+ * @param {Object} payload valid json payload
+ * @param {Function} done callback to invoke on success or errorH
+ * @return {String|Error} xml string request or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { buildRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * buildRequest(payload, (error, request) => { ... });
+ * // => String
+ */
+const buildRequest = (payload, done) => {
+
+  // prepare header params
+  const { header: { token = '?', eventId } } = payload;
+
+  // prepare request
+  let { request } = payload;
+  request = _.map(request, (value, key) => {
+    const name =
+      _.chain(key).snakeCase().split('_').startCase().join('').value();
+    return {
+      name: name,
+      type: 'String',
+      value: value
+    };
+  });
+
+  // prepare request payload
+  const _payload = {
+    'soapenv:Envelope': {
+      $: $,
+      'soapenv:Header': {
+        'soap:Token': token,
+        'soap:EventID': eventId
+      },
+      'soapenv:Body': {
+        'gen:getGenericResult': {
+          'Request': {
+            'dataItem': request
+          }
+        }
+      }
+    }
+  };
+
+  // convert to xml and return
+  jsonToXml(_payload, done);
 };
 
 // const buildLoginRequest;

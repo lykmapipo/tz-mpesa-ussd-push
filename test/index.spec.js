@@ -2,6 +2,7 @@
 
 
 /* dependencies */
+const _ = require('lodash');
 const { readFileSync } = require('fs');
 const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
@@ -12,7 +13,9 @@ const {
   channel,
   mode,
   currency,
-  parseRequest
+  parseRequest,
+  parseTransactionResult,
+  buildRequest
 } = include(__dirname, '..');
 
 
@@ -50,31 +53,31 @@ describe('tz mpesa ussd push', () => {
   it('should parse generic request to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
-    parseRequest(xml, (error, request) => {
+    parseRequest(xml, (error, payload) => {
       expect(error).to.not.exist;
-      expect(request).to.exist;
-      const { header, body } = request;
+      expect(payload).to.exist;
+      const { header, request } = payload;
       expect(header).to.exist;
       expect(header).to.be.an('object');
-      expect(body).to.exist;
-      expect(body).to.be.an('object');
-      done(error, request);
+      expect(request).to.exist;
+      expect(request).to.be.an('object');
+      done(error, payload);
     });
   });
 
   it('should parse transaction result to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/transaction_result.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
-    parseRequest(xml, (error, result) => {
+    parseTransactionResult(xml, (error, payload) => {
       expect(error).to.not.exist;
-      expect(result).to.exist;
-      const { header, body } = result;
+      expect(payload).to.exist;
+      const { header, request } = payload;
       expect(header).to.exist;
       expect(header).to.be.an('object');
       expect(header).to.be.eql({ eventId: 1 });
-      expect(body).to.exist;
-      expect(body).to.be.an('object');
-      expect(body).to.be.eql({
+      expect(request).to.exist;
+      expect(request).to.be.an('object');
+      expect(request).to.be.eql({
         resultType: undefined,
         resultCode: undefined,
         resultDesc: undefined,
@@ -89,7 +92,23 @@ describe('tz mpesa ussd push', () => {
         thirdPartyReference: 'E5FK3170',
         insightReference: '5F8648318CD95BC3E0531600980A264E'
       });
-      done(error, result);
+      done(error, payload);
     });
   });
+
+  it('should build generic request to json', (done) => {
+    const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    const payload = {
+      header: { eventId: 2500, token: '96feae744a986aeee4433' },
+      request: { username: '123000', password: '123@123' }
+    };
+    buildRequest(payload, (error, request) => {
+      expect(error).to.not.exist;
+      expect(request).to.exist;
+      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
+      done(error, request);
+    });
+  });
+
 });
