@@ -23,6 +23,7 @@ const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const country = 'TZ';
 
@@ -33,6 +34,7 @@ const country = 'TZ';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const provider = 'Vodacom';
 
@@ -43,6 +45,7 @@ const provider = 'Vodacom';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const method = 'Mobile Money';
 
@@ -53,6 +56,7 @@ const method = 'Mobile Money';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const channel = 'MPESA';
 
@@ -63,6 +67,7 @@ const channel = 'MPESA';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const mode = 'USSD Push';
 
@@ -73,6 +78,7 @@ const mode = 'USSD Push';
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  */
 const currency = 'TZS';
 
@@ -88,7 +94,8 @@ const currency = 'TZS';
  * @private
  * @example
  * const { transformValue } = require('@lykmapipo/tz-mpesa-ussd-push');
- * transformValue(item);
+ * const item = {name: 'eventId', value: 1, type: String }
+ * transformValue(item); // => '1'
  */
 const transformValue = item => {
   // ensure item
@@ -102,7 +109,7 @@ const transformValue = item => {
 
   // transform string
   if (type === 'String' && value) {
-    value = value === 'null' ? undefined : value;
+    value = value === 'null' ? undefined : String(value);
     return value;
   }
 
@@ -121,9 +128,11 @@ const transformValue = item => {
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @static
  * @example
  * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
  * parseRequest(xml, (error, request) => { ... });
+ * // => { header: ..., body: ...}
  */
 const parseRequest = (xml, done) => {
   // prepare parse options
@@ -140,7 +149,7 @@ const parseRequest = (xml, done) => {
     // obtain request header
     const header = _.get(json, REQUEST_HEADER_TAG, {});
 
-    // obtain request data
+    // obtain and transform request data
     const items = _.get(json, REQUEST_DATA_TAG, []);
     const body = _.reduce(items, (accumulator, item) => {
       const value = {};
@@ -165,9 +174,11 @@ const parseRequest = (xml, done) => {
  * @since 0.1.0
  * @version 0.1.0
  * @public
+ * @statuc
  * @example
  * const { parseTransactionResult } = require('@lykmapipo/tz-mpesa-ussd-push');
  * parseTransactionResult(xml, (error, request) => { ... });
+ * // => { header: ..., body: ...}
  */
 const parseTransactionResult = (xml, done) => parseRequest(xml, done);
 
