@@ -1,0 +1,62 @@
+{
+  "name": "@lykmapipo/tz-mpesa-ussd-push",
+  "version": "0.1.0",
+  "description": "Vodacom Tanzania USSD Push API Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lykmapipo/tz-mpesa-ussd-push.git"
+  },
+  "keywords": [
+    "lykmapipo",
+    "tanzania",
+    "vodacom",
+    "payment",
+    "mobile",
+    "money",
+    "mpesa",
+    "ussd",
+    "push"
+  ],
+  "contributors": [
+    {
+      "name": "lykmapipo",
+      "email": "lallyelias87@gmail.com",
+      "url": "https://github.com/lykmapipo"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lykmapipo/tz-mpesa-ussd-push/issues",
+    "email": "lallyelias87@gmail.com"
+  },
+  "homepage": "https://github.com/lykmapipo/tz-mpesa-ussd-push",
+  "devDependencies": {
+    "@lykmapipo/include": "^0.2.0",
+    "chai": "^4.2.0",
+    "grunt": "^1.0.3",
+    "grunt-contrib-jshint": "^2.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-mocha-test": "^0.13.3",
+    "jshint-stylish": "^2.2.1",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.6"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "@lykmapipo/common": ">=0.6.0",
+    "@lykmapipo/env": ">=0.4.0",
+    "async": ">=2.6.1",
+    "lodash": ">=4.17.11",
+    "paywell-xml": ">=0.1.0",
+    "request": ">=2.88.0",
+    "xml2js": ">=0.4.19"
+  },
+  "engines": {
+    "node": ">=8.11.1",
+    "npm": ">=5.6.0"
+  }
+}
