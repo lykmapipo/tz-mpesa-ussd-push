@@ -51,6 +51,7 @@
     "@lykmapipo/env": ">=0.4.0",
     "async": ">=2.6.1",
     "lodash": ">=4.17.11",
+    "moment": ">=2.24.0",
     "paywell-xml": ">=0.1.0",
     "request": ">=2.88.0",
     "xml2js": ">=0.4.19"
