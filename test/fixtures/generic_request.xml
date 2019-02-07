@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.4cgroup.co.za/soapauth" xmlns:gen="http://www.4cgroup.co.za/genericsoap">
+  <soapenv:Header>
+    <soap:Token>96feae744a986aeee4433</soap:Token>
+    <soap:EventID>2500</soap:EventID>
+  </soapenv:Header>
+  <soapenv:Body>
+    <gen:getGenericResult>
+      <Request>
+        <dataItem>
+          <name>Username</name>
+          <type>String</type>
+          <value>123000</value>
+        </dataItem>
+        <dataItem>
+          <name>Password</name>
+          <type>String</type>
+          <value>123@123</value>
+        </dataItem>
+      </Request>
+    </gen:getGenericResult>
+  </soapenv:Body>
+</soapenv:Envelope>
