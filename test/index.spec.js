@@ -13,9 +13,9 @@ const {
   channel,
   mode,
   currency,
-  parseRequest,
+  parseXml,
   parseTransactionResult,
-  buildRequest
+  buildXml
 } = include(__dirname, '..');
 
 
@@ -50,10 +50,10 @@ describe('tz mpesa ussd push', () => {
     expect(currency).to.be.equal('TZS');
   });
 
-  it('should parse generic request to json', (done) => {
+  it('should parse xml to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
-    parseRequest(xml, (error, payload) => {
+    parseXml(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
       const { header, request } = payload;
@@ -96,14 +96,14 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should build generic request to json', (done) => {
+  it('should serialize json to xml', (done) => {
     const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
     const payload = {
       header: { eventId: 2500, token: '96feae744a986aeee4433' },
       request: { username: '123000', password: '123@123' }
     };
-    buildRequest(payload, (error, request) => {
+    buildXml(payload, (error, request) => {
       expect(error).to.not.exist;
       expect(request).to.exist;
       expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));

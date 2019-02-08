@@ -123,8 +123,8 @@ const transformValue = item => {
 
 
 /**
- * @function parseRequest
- * @name parseRequest
+ * @function parseXml
+ * @name parseXml
  * @description Parse and convert generic xml request to json
  * @param {String} xml valid xml payload
  * @param {Function} done callback to invoke on success or errorH
@@ -134,11 +134,11 @@ const transformValue = item => {
  * @public
  * @static
  * @example
- * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseRequest(xml, (error, request) => { ... });
+ * const { parseXml } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseXml(xml, (error, request) => { ... });
  * // => { header: ..., body: ...}
  */
-const parseRequest = (xml, done) => {
+const parseXml = (xml, done) => {
   // prepare parse options
   const { processors } = xml2js;
   const { stripPrefix } = processors;
@@ -186,12 +186,12 @@ const parseRequest = (xml, done) => {
  * parseTransactionResult(xml, (error, request) => { ... });
  * // => { header: ..., body: ...}
  */
-const parseTransactionResult = (xml, done) => parseRequest(xml, done);
+const parseTransactionResult = (xml, done) => parseXml(xml, done);
 
 
 /**
- * @function buildRequest
- * @name buildRequest
+ * @function buildXml
+ * @name buildXml
  * @description Build and convert given json payload to ussd push xml request
  * @param {Object} payload valid json payload
  * @param {Function} done callback to invoke on success or errorH
@@ -201,12 +201,11 @@ const parseTransactionResult = (xml, done) => parseRequest(xml, done);
  * @public
  * @static
  * @example
- * const { buildRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * buildRequest(payload, (error, request) => { ... });
+ * const { buildXml } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * buildXml(payload, (error, request) => { ... });
  * // => String
  */
-const buildRequest = (payload, done) => {
-
+const buildXml = (payload, done) => {
   // prepare header params
   const { header: { token = '?', eventId } } = payload;
 
@@ -244,9 +243,6 @@ const buildRequest = (payload, done) => {
   jsonToXml(_payload, done);
 };
 
-// const buildLoginRequest;
-// const buildTransactionRequest;
-
 
 /* expose */
 module.exports = exports = {
@@ -256,7 +252,7 @@ module.exports = exports = {
   channel,
   mode,
   currency,
-  parseRequest,
+  parseXml,
   parseTransactionResult,
-  buildRequest
+  buildXml
 };
