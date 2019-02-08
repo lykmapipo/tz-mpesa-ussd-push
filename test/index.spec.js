@@ -16,7 +16,7 @@ const {
   currency,
   serialize,
   serializeLogin,
-  buildTransactionRequest,
+  serializeTransaction,
   parseRequest,
   parseLoginResponse,
   parseTransactionResponse,
@@ -96,7 +96,7 @@ describe('tz mpesa ussd push', () => {
       reference: 'A5FK3170',
       callback: 'https://api.example.com/webhooks/payments'
     };
-    buildTransactionRequest(payload, (error, request) => {
+    serializeTransaction(payload, (error, request) => {
       expect(error).to.not.exist;
       expect(request).to.exist;
       expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));

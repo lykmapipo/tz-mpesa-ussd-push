@@ -235,8 +235,8 @@ const serializeLogin = (options, done) => {
 
 
 /**
- * @function buildTransactionRequest
- * @name buildTransactionRequest
+ * @function serializeTransaction
+ * @name serializeTransaction
  * @description Build and convert provided transaction to ussd push transaction
  * request xml payload.
  * @param {Object} options valid transaction details
@@ -247,11 +247,11 @@ const serializeLogin = (options, done) => {
  * @public
  * @static
  * @example
- * const { buildTransactionRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * buildTransactionRequest(payload, (error, request) => { ... });
+ * const { serializeTransaction } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * serializeTransaction(payload, (error, request) => { ... });
  * // => String
  */
-const buildTransactionRequest = (options, done) => {
+const serializeTransaction = (options, done) => {
   // ensure transaction
   const transaction = _.merge({}, options);
 
@@ -443,7 +443,7 @@ module.exports = exports = {
   currency,
   serialize,
   serializeLogin,
-  buildTransactionRequest,
+  serializeTransaction,
   parseRequest,
   parseLoginResponse,
   parseTransactionResponse,
