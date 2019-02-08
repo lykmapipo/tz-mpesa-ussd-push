@@ -15,7 +15,7 @@ const {
   mode,
   currency,
   serialize,
-  buildLoginRequest,
+  serializeLogin,
   buildTransactionRequest,
   parseRequest,
   parseLoginResponse,
@@ -74,7 +74,7 @@ describe('tz mpesa ussd push', () => {
     const xmlPath = `${__dirname}/fixtures/login_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
     const payload = { username: '123000', password: '123@123' };
-    buildLoginRequest(payload, (error, request) => {
+    serializeLogin(payload, (error, request) => {
       expect(error).to.not.exist;
       expect(request).to.exist;
       expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));

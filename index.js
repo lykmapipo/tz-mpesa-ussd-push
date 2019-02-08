@@ -185,8 +185,8 @@ const serialize = (payload, done) => {
 
 
 /**
- * @function buildLoginRequest
- * @name buildLoginRequest
+ * @function serializeLogin
+ * @name serializeLogin
  * @description Build and convert provided credentials to ussd push login
  * request xml payload.
  * @param {Object} options valid login credentials
@@ -199,11 +199,11 @@ const serialize = (payload, done) => {
  * @public
  * @static
  * @example
- * const { buildLoginRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * buildLoginRequest(payload, (error, request) => { ... });
+ * const { serializeLogin } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * serializeLogin(payload, (error, request) => { ... });
  * // => String
  */
-const buildLoginRequest = (options, done) => {
+const serializeLogin = (options, done) => {
   // ensure credentials
   const credentials = _.merge({}, options);
 
@@ -442,7 +442,7 @@ module.exports = exports = {
   mode,
   currency,
   serialize,
-  buildLoginRequest,
+  serializeLogin,
   buildTransactionRequest,
   parseRequest,
   parseLoginResponse,
