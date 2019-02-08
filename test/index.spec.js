@@ -195,7 +195,7 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should parse transaction result to json', (done) => {
+  it('should deserialize transaction result to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/transaction_result.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
     parseTransactionResult(xml, (error, payload) => {
