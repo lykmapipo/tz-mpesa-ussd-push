@@ -19,7 +19,7 @@ const {
   serializeTransaction,
   deserialize,
   deserializeLogin,
-  parseTransactionResponse,
+  deserializeTransaction,
   parseTransactionResult
 } = include(__dirname, '..');
 
@@ -152,7 +152,7 @@ describe('tz mpesa ussd push', () => {
   it('should deserialize transaction response to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/transaction_response.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
-    parseTransactionResponse(xml, (error, payload) => {
+    deserializeTransaction(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
       const { header, event, request, response } = payload;
