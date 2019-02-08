@@ -18,6 +18,13 @@ const RESULT_DATE_FORMAT = 'YYYYMMDD HHmmss';
 const REQUEST_DATE_FORMAT = 'YYYYMMDDHH';
 const REQUEST_HEADER_TAG = 'envelope.header';
 const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
+const RESPONSE_HEADER_TAG = 'envelope.header';
+const RESPONSE_EVENT_DATA_TAG =
+  'envelope.body.getGenericResultResponse.soapapiResult.eventInfo';
+const RESPONSE_REQUEST_DATA_TAG =
+  'envelope.body.getGenericResultResponse.soapapiResult.request.dataItem';
+const RESPONSE_DATA_TAG =
+  'envelope.body.getGenericResultResponse.soapapiResult.response.dataItem';
 const $ = {
   'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
   'xmlns:soap': 'http://www.4cgroup.co.za/soapauth',
@@ -250,25 +257,25 @@ const buildTransactionRequest = (options, done) => {
   // ensure transaction
   const transaction = _.merge({}, options);
 
-  // ensure valid transaction details
+  // obtain transaction details
   const {
     username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
       token,
       msisdn,
-      business: {
-        name = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
-        number = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER')
-      },
+      businessName = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
+      businessNumber = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER'),
       currency = 'TZS',
       date = new Date(),
       amount,
       reference,
       callback = getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
   } = transaction;
+
+  // ensure valid transaction details
   const isValid = (
     (amount > 0) &&
     areNotEmpty(username, token, msisdn, currency) &&
-    areNotEmpty(name, number, reference, callback)
+    areNotEmpty(businessName, businessNumber, reference, callback)
   );
 
   // back-off if invalid transaction
@@ -284,8 +291,8 @@ const buildTransactionRequest = (options, done) => {
     header: { token, eventId },
     request: {
       'CustomerMSISDN': msisdn,
-      'BusinessName': name,
-      'BusinessNumber': number,
+      'BusinessName': businessName,
+      'BusinessNumber': businessNumber,
       'Currency': currency,
       'Date': moment(date).format(REQUEST_DATE_FORMAT),
       'Amount': amount,
@@ -316,7 +323,7 @@ const buildTransactionRequest = (options, done) => {
  * @example
  * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
  * parseRequest(xml, (error, request) => { ... });
- * // => { header: ..., request: ...}
+ * // => { header: ..., event: ..., request: ..., response: ...}
  */
 const parseRequest = (xml, done) => {
   // prepare parse options
@@ -330,20 +337,42 @@ const parseRequest = (xml, done) => {
     // back-off on error
     if (error) { return done(error); }
 
-    // obtain request header
-    const header = _.get(json, REQUEST_HEADER_TAG, {});
+    // obtain request header and normalize
+    const header = (
+      _.get(json, REQUEST_HEADER_TAG) ||
+      _.get(json, RESPONSE_HEADER_TAG) || {}
+    );
+    header.eventId = (
+      _.get(header, 'eventId') ||
+      _.get(header, 'eventid._') ||
+      _.get(header, 'eventid')
+    );
+    delete header.eventid;
 
-    // obtain and transform request data
-    const items = _.get(json, REQUEST_DATA_TAG, []);
-    const request = _.reduce(items, (accumulator, item) => {
+    // obtain request event
+    const event = _.get(json, RESPONSE_EVENT_DATA_TAG, {});
+
+    // deserialize items to js objects
+    const itemize = items => _.reduce(items, (accumulator, item) => {
       const value = {};
       const key = _.camelCase(item.name);
       value[key] = transformValue(item);
       return _.merge({}, accumulator, value);
     }, {});
 
+    // obtain and transform request data
+    let request = [].concat((
+      _.get(json, REQUEST_DATA_TAG) ||
+      _.get(json, RESPONSE_REQUEST_DATA_TAG) || []
+    ));
+    request = itemize(request);
+
+    // obtain and transform response data
+    let response = [].concat(_.get(json, RESPONSE_DATA_TAG, []));
+    response = itemize(response);
+
     // return request
-    return done(null, { header, request });
+    return done(null, { header, event, request, response });
   });
 };
 
@@ -362,7 +391,7 @@ const parseRequest = (xml, done) => {
  * @example
  * const { parseLoginResponse } = require('@lykmapipo/tz-mpesa-ussd-push');
  * parseLoginResponse(xml, (error, request) => { ... });
- * // => { header: ..., request: ...}
+ * // => { header: ..., event: ..., request: ..., response: ...}
  */
 const parseLoginResponse = (xml, done) => parseRequest(xml, done);
 

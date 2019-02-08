@@ -18,6 +18,7 @@ const {
   buildLoginRequest,
   buildTransactionRequest,
   parseRequest,
+  parseLoginResponse,
   parseTransactionResult
 } = include(__dirname, '..');
 
@@ -87,7 +88,8 @@ describe('tz mpesa ussd push', () => {
       username: '338899',
       token: '744a986aeee4433fdf1b2',
       msisdn: '255754001001',
-      business: { name: 'MPESA', number: '338899' },
+      businessName: 'MPESA',
+      businessNumber: '338899',
       date: moment('2019020804', 'YYYYMMDDHH').toDate(),
       amount: 1500,
       reference: 'A5FK3170',
@@ -101,7 +103,7 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should parse generic request to json', (done) => {
+  it('should deserialize xml to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
     parseRequest(xml, (error, payload) => {
@@ -112,6 +114,36 @@ describe('tz mpesa ussd push', () => {
       expect(header).to.be.an('object');
       expect(request).to.exist;
       expect(request).to.be.an('object');
+      done(error, payload);
+    });
+  });
+
+  it('should deserialize login response to json', (done) => {
+    const xmlPath = `${__dirname}/fixtures/login_response.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    parseLoginResponse(xml, (error, payload) => {
+      expect(error).to.not.exist;
+      expect(payload).to.exist;
+      const { header, event, request, response } = payload;
+      expect(header).to.exist;
+      expect(header).to.be.an('object');
+      expect(event).to.exist;
+      expect(event).to.be.an('object');
+      expect(request).to.exist;
+      expect(request).to.be.an('object');
+      expect(response).to.exist;
+      expect(response).to.be.an('object');
+      expect(payload).to.be.eql({
+        header: { eventId: 2500 },
+        event: {
+          code: 3,
+          description: 'Processed',
+          detail: 'Processed',
+          transactionId: '504830a4f038cb842960cc'
+        },
+        request: { username: 123000, password: '123@123' },
+        response: { sessionId: '744a986aeee4433fdf1b2' }
+      });
       done(error, payload);
     });
   });
@@ -128,20 +160,25 @@ describe('tz mpesa ussd push', () => {
       expect(header).to.be.eql({ eventId: 1 });
       expect(request).to.exist;
       expect(request).to.be.an('object');
-      expect(request).to.be.eql({
-        resultType: undefined,
-        resultCode: undefined,
-        resultDesc: undefined,
-        transactionStatus: 'USSDCallbackCancel',
-        originatorConversationId: undefined,
-        conversationId: undefined,
-        transId: undefined,
-        businessNumber: 888888,
-        currency: 'TZS',
-        amount: 1500,
-        date: new Date('2019-02-08T16:01:47.000Z'),
-        thirdPartyReference: 'E5FK3170',
-        insightReference: '5F8648318CD95BC3E0531600980A264E'
+      expect(payload).to.be.eql({
+        header: { eventId: 1 },
+        event: {},
+        request: {
+          resultType: undefined,
+          resultCode: undefined,
+          resultDesc: undefined,
+          transactionStatus: 'USSDCallbackCancel',
+          originatorConversationId: undefined,
+          conversationId: undefined,
+          transId: undefined,
+          businessNumber: 888888,
+          currency: 'TZS',
+          amount: 1500,
+          date: new Date('2019-02-08T16:01:47.000Z'),
+          thirdPartyReference: 'E5FK3170',
+          insightReference: '5F8648318CD95BC3E0531600980A264E'
+        },
+        response: {}
       });
       done(error, payload);
     });
