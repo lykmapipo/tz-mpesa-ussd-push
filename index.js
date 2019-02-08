@@ -123,22 +123,22 @@ const transformValue = item => {
 
 
 /**
- * @function parseXml
- * @name parseXml
+ * @function parseRequest
+ * @name parseRequest
  * @description Parse and convert generic xml request to json
  * @param {String} xml valid xml payload
- * @param {Function} done callback to invoke on success or errorH
+ * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed request or error
  * @since 0.1.0
  * @version 0.1.0
  * @public
  * @static
  * @example
- * const { parseXml } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseXml(xml, (error, request) => { ... });
+ * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseRequest(xml, (error, request) => { ... });
  * // => { header: ..., body: ...}
  */
-const parseXml = (xml, done) => {
+const parseRequest = (xml, done) => {
   // prepare parse options
   const { processors } = xml2js;
   const { stripPrefix } = processors;
@@ -171,41 +171,22 @@ const parseXml = (xml, done) => {
 
 
 /**
- * @function parseTransactionResult
- * @name parseTransactionResult
- * @description Parse and convert ussd push xml result to json
- * @param {String} xml valid xml payload
- * @param {Function} done callback to invoke on success or errorH
- * @return {Object|Error} parsed result or error
- * @since 0.1.0
- * @version 0.1.0
- * @public
- * @statuc
- * @example
- * const { parseTransactionResult } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseTransactionResult(xml, (error, request) => { ... });
- * // => { header: ..., body: ...}
- */
-const parseTransactionResult = (xml, done) => parseXml(xml, done);
-
-
-/**
- * @function buildXml
- * @name buildXml
+ * @function buildRequest
+ * @name buildRequest
  * @description Build and convert given json payload to ussd push xml request
  * @param {Object} payload valid json payload
- * @param {Function} done callback to invoke on success or errorH
+ * @param {Function} done callback to invoke on success or error
  * @return {String|Error} xml string request or error
  * @since 0.1.0
  * @version 0.1.0
  * @public
  * @static
  * @example
- * const { buildXml } = require('@lykmapipo/tz-mpesa-ussd-push');
- * buildXml(payload, (error, request) => { ... });
+ * const { buildRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * buildRequest(payload, (error, request) => { ... });
  * // => String
  */
-const buildXml = (payload, done) => {
+const buildRequest = (payload, done) => {
   // prepare header params
   const { header: { token = '?', eventId } } = payload;
 
@@ -240,8 +221,74 @@ const buildXml = (payload, done) => {
   };
 
   // convert to xml and return
-  jsonToXml(_payload, done);
+  return jsonToXml(_payload, done);
 };
+
+
+/**
+ * @function buildLoginRequest
+ * @name buildLoginRequest
+ * @description Build and convert provided credentials to ussd push login
+ * request xml payload.
+ * @param {Object} options valid login credentials
+ * @param {String} options.username valid login username
+ * @param {String} options.password valid login password
+ * @param {Function} done callback to invoke on success or error
+ * @return {String|Error} xml string request or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { buildLoginRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * buildLoginRequest(payload, (error, request) => { ... });
+ * // => String
+ */
+const buildLoginRequest = (options, done) => {
+  // ensure credentials
+  const credentials = _.merge({}, options);
+
+  // ensure username and password
+  const { username, password } = credentials;
+  const isValid = !_.isEmpty(username) && !_.isEmpty(password);
+
+  // back-off if invalid credentials
+  if (!isValid) {
+    let error = new Error('Invalid Login Credentials');
+    error.status = 400;
+    return done(error);
+  }
+
+  // prepare ussd push login payload
+  const token = '?';
+  const eventId = 2500;
+  const payload = {
+    header: { token, eventId },
+    request: { username, password }
+  };
+
+  // serialize login payload to xml
+  return buildRequest(payload, done);
+};
+
+
+/**
+ * @function parseTransactionResult
+ * @name parseTransactionResult
+ * @description Parse and convert ussd push xml result to json
+ * @param {String} xml valid xml payload
+ * @param {Function} done callback to invoke on success or error
+ * @return {Object|Error} parsed result or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { parseTransactionResult } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseTransactionResult(xml, (error, request) => { ... });
+ * // => { header: ..., body: ...}
+ */
+const parseTransactionResult = (xml, done) => parseRequest(xml, done);
 
 
 /* expose */
@@ -252,7 +299,8 @@ module.exports = exports = {
   channel,
   mode,
   currency,
-  parseXml,
-  parseTransactionResult,
-  buildXml
+  parseRequest,
+  buildRequest,
+  buildLoginRequest,
+  parseTransactionResult
 };
