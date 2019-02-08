@@ -2,8 +2,9 @@
 
 
 /* dependencies */
-const _ = require('lodash');
 const { readFileSync } = require('fs');
+const _ = require('lodash');
+const moment = require('moment');
 const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
 const {
@@ -13,10 +14,11 @@ const {
   channel,
   mode,
   currency,
-  parseRequest,
-  parseTransactionResult,
   buildRequest,
-  buildLoginRequest
+  buildLoginRequest,
+  buildTransactionRequest,
+  parseRequest,
+  parseTransactionResult
 } = include(__dirname, '..');
 
 
@@ -49,6 +51,54 @@ describe('tz mpesa ussd push', () => {
   it('should use tzs currency', () => {
     expect(currency).to.exist;
     expect(currency).to.be.equal('TZS');
+  });
+
+  it('should serialize json to xml', (done) => {
+    const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    const payload = {
+      header: { eventId: 2500, token: '96feae744a986aeee4433' },
+      request: { username: '123000', password: '123@123' }
+    };
+    buildRequest(payload, (error, request) => {
+      expect(error).to.not.exist;
+      expect(request).to.exist;
+      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
+      done(error, request);
+    });
+  });
+
+  it('should build login request', (done) => {
+    const xmlPath = `${__dirname}/fixtures/login_request.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    const payload = { username: '123000', password: '123@123' };
+    buildLoginRequest(payload, (error, request) => {
+      expect(error).to.not.exist;
+      expect(request).to.exist;
+      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
+      done(error, request);
+    });
+  });
+
+  it('should build transaction request', (done) => {
+    const xmlPath = `${__dirname}/fixtures/transaction_request.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    const payload = {
+      username: '338899',
+      token: '744a986aeee4433fdf1b2',
+      msisdn: '255754001001',
+      business: { name: 'MPESA', number: '338899' },
+      date: moment('2019020804', 'YYYYMMDDHH').toDate(),
+      amount: 1500,
+      reference: 'A5FK3170',
+      callback: 'https://api.example.com/webhooks/payments'
+    };
+    buildTransactionRequest(payload, (error, request) => {
+      expect(error).to.not.exist;
+      expect(request).to.exist;
+      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
+      done(error, request);
+    });
   });
 
   it('should parse generic request to json', (done) => {
@@ -89,38 +139,11 @@ describe('tz mpesa ussd push', () => {
         businessNumber: 888888,
         currency: 'TZS',
         amount: 1500,
-        date: new Date('2017-12-04T16:01:47.000Z'),
+        date: new Date('2019-02-08T16:01:47.000Z'),
         thirdPartyReference: 'E5FK3170',
         insightReference: '5F8648318CD95BC3E0531600980A264E'
       });
       done(error, payload);
-    });
-  });
-
-  it('should serialize json to xml', (done) => {
-    const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
-    const payload = {
-      header: { eventId: 2500, token: '96feae744a986aeee4433' },
-      request: { username: '123000', password: '123@123' }
-    };
-    buildRequest(payload, (error, request) => {
-      expect(error).to.not.exist;
-      expect(request).to.exist;
-      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
-      done(error, request);
-    });
-  });
-
-  it('should build login request', (done) => {
-    const xmlPath = `${__dirname}/fixtures/login_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
-    const payload = { username: '123000', password: '123@123' };
-    buildLoginRequest(payload, (error, request) => {
-      expect(error).to.not.exist;
-      expect(request).to.exist;
-      expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));
-      done(error, request);
     });
   });
 

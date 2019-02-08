@@ -5,6 +5,8 @@
 const _ = require('lodash');
 const moment = require('moment');
 const xml2js = require('xml2js');
+const { areNotEmpty } = require('@lykmapipo/common');
+const { getString } = require('@lykmapipo/env');
 const {
   parse: xmlToJson,
   build: jsonToXml
@@ -12,7 +14,8 @@ const {
 
 
 /* constants */
-const DATE_FORMAT = 'YYYYMMDD HHmmss';
+const RESULT_DATE_FORMAT = 'YYYYMMDD HHmmss';
+const REQUEST_DATE_FORMAT = 'YYYYMMDDHH';
 const REQUEST_HEADER_TAG = 'envelope.header';
 const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
 const $ = {
@@ -20,6 +23,7 @@ const $ = {
   'xmlns:soap': 'http://www.4cgroup.co.za/soapauth',
   'xmlns:gen': 'http://www.4cgroup.co.za/genericsoap'
 };
+
 
 /**
  * @name country
@@ -107,7 +111,7 @@ const transformValue = item => {
 
   // transform date
   if (name === 'Date' && value) {
-    value = moment(value, DATE_FORMAT).toDate();
+    value = moment(value, RESULT_DATE_FORMAT).toDate();
     return value;
   }
 
@@ -119,54 +123,6 @@ const transformValue = item => {
 
   // always return value
   return value;
-};
-
-
-/**
- * @function parseRequest
- * @name parseRequest
- * @description Parse and convert generic xml request to json
- * @param {String} xml valid xml payload
- * @param {Function} done callback to invoke on success or error
- * @return {Object|Error} parsed request or error
- * @since 0.1.0
- * @version 0.1.0
- * @public
- * @static
- * @example
- * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseRequest(xml, (error, request) => { ... });
- * // => { header: ..., body: ...}
- */
-const parseRequest = (xml, done) => {
-  // prepare parse options
-  const { processors } = xml2js;
-  const { stripPrefix } = processors;
-  const tagNameProcessors = [stripPrefix, _.camelCase];
-  const options = { tagNameProcessors };
-
-  // parse request xml to json
-  xmlToJson(xml, options, (error, json) => {
-    // back-off on error
-    if (error) { return done(error); }
-
-    // obtain request header
-    const header = _.get(json, REQUEST_HEADER_TAG, {});
-
-    // obtain and transform request data
-    const items = _.get(json, REQUEST_DATA_TAG, []);
-    const request = _.reduce(items, (accumulator, item) => {
-      const value = {};
-      const key = _.camelCase(item.name);
-      value[key] = transformValue(item);
-      return _.merge({}, accumulator, value);
-    }, {});
-
-    // TODO parse response?
-
-    // return request
-    return done(null, { header, request });
-  });
 };
 
 
@@ -193,10 +149,8 @@ const buildRequest = (payload, done) => {
   // prepare request
   let { request } = payload;
   request = _.map(request, (value, key) => {
-    const name =
-      _.chain(key).snakeCase().split('_').startCase().join('').value();
     return {
-      name: name,
+      name: key,
       type: 'String',
       value: value
     };
@@ -234,7 +188,7 @@ const buildRequest = (payload, done) => {
  * @param {String} options.username valid login username
  * @param {String} options.password valid login password
  * @param {Function} done callback to invoke on success or error
- * @return {String|Error} xml string request or error
+ * @return {String|Error} valid xml string for login request or error
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -249,7 +203,10 @@ const buildLoginRequest = (options, done) => {
   const credentials = _.merge({}, options);
 
   // ensure username and password
-  const { username, password } = credentials;
+  const {
+    username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
+      password = getString('TZ_MPESA_USSD_PUSH_PASSWORD')
+  } = credentials;
   const isValid = !_.isEmpty(username) && !_.isEmpty(password);
 
   // back-off if invalid credentials
@@ -264,7 +221,7 @@ const buildLoginRequest = (options, done) => {
   const eventId = 2500;
   const payload = {
     header: { token, eventId },
-    request: { username, password }
+    request: { 'Username': username, 'Password': password }
   };
 
   // serialize login payload to xml
@@ -273,10 +230,168 @@ const buildLoginRequest = (options, done) => {
 
 
 /**
+ * @function buildTransactionRequest
+ * @name buildTransactionRequest
+ * @description Build and convert provided transaction to ussd push transaction
+ * request xml payload.
+ * @param {Object} options valid transaction details
+ * @param {Function} done callback to invoke on success or error
+ * @return {String|Error} valid xml string for transaction request or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { buildTransactionRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * buildTransactionRequest(payload, (error, request) => { ... });
+ * // => String
+ */
+const buildTransactionRequest = (options, done) => {
+  // ensure transaction
+  const transaction = _.merge({}, options);
+
+  // ensure valid transaction details
+  const {
+    username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
+      token,
+      msisdn,
+      business: {
+        name = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
+        number = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER')
+      },
+      currency = 'TZS',
+      date = new Date(),
+      amount,
+      reference,
+      callback = getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
+  } = transaction;
+  const isValid = (
+    (amount > 0) &&
+    areNotEmpty(username, token, msisdn, currency) &&
+    areNotEmpty(name, number, reference, callback)
+  );
+
+  // back-off if invalid transaction
+  if (!isValid) {
+    let error = new Error('Invalid Transaction Details');
+    error.status = 400;
+    return done(error);
+  }
+
+  // prepare ussd push transaction request payload
+  const eventId = 40009;
+  const payload = {
+    header: { token, eventId },
+    request: {
+      'CustomerMSISDN': msisdn,
+      'BusinessName': name,
+      'BusinessNumber': number,
+      'Currency': currency,
+      'Date': moment(date).format(REQUEST_DATE_FORMAT),
+      'Amount': amount,
+      'ThirdPartyReference': reference,
+      'Command': 'customerLipa',
+      'CallBackChannel': 1,
+      'CallbackDestination': callback,
+      'Username': username
+    }
+  };
+
+  // serialize ussd push transaction request payload to xml
+  return buildRequest(payload, done);
+};
+
+
+/**
+ * @function parseRequest
+ * @name parseRequest
+ * @description Parse and convert generic xml request to json
+ * @param {String} xml valid xml payload
+ * @param {Function} done callback to invoke on success or error
+ * @return {Object|Error} parsed request or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseRequest(xml, (error, request) => { ... });
+ * // => { header: ..., request: ...}
+ */
+const parseRequest = (xml, done) => {
+  // prepare parse options
+  const { processors } = xml2js;
+  const { stripPrefix } = processors;
+  const tagNameProcessors = [stripPrefix, _.camelCase];
+  const options = { tagNameProcessors };
+
+  // parse request xml to json
+  xmlToJson(xml, options, (error, json) => {
+    // back-off on error
+    if (error) { return done(error); }
+
+    // obtain request header
+    const header = _.get(json, REQUEST_HEADER_TAG, {});
+
+    // obtain and transform request data
+    const items = _.get(json, REQUEST_DATA_TAG, []);
+    const request = _.reduce(items, (accumulator, item) => {
+      const value = {};
+      const key = _.camelCase(item.name);
+      value[key] = transformValue(item);
+      return _.merge({}, accumulator, value);
+    }, {});
+
+    // return request
+    return done(null, { header, request });
+  });
+};
+
+
+/**
+ * @function parseLoginResponse
+ * @name parseLoginResponse
+ * @description Parse and convert ussd push login xml result to json
+ * @param {String} xml valid login xml payload
+ * @param {Function} done callback to invoke on success or error
+ * @return {Object|Error} parsed result or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { parseLoginResponse } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseLoginResponse(xml, (error, request) => { ... });
+ * // => { header: ..., request: ...}
+ */
+const parseLoginResponse = (xml, done) => parseRequest(xml, done);
+
+
+/**
+ * @function parseTransactionResponse
+ * @name parseTransactionResponse
+ * @description Parse and convert ussd push transaction response xml result
+ * to json
+ * @param {String} xml valid transaction response xml payload
+ * @param {Function} done callback to invoke on success or error
+ * @return {Object|Error} parsed result or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { parseTransactionResponse } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * parseTransactionResponse(xml, (error, request) => { ... });
+ * // => { header: ..., request: ..., response: ...}
+ */
+const parseTransactionResponse = (xml, done) => parseRequest(xml, done);
+
+
+/**
  * @function parseTransactionResult
  * @name parseTransactionResult
- * @description Parse and convert ussd push xml result to json
- * @param {String} xml valid xml payload
+ * @description Parse and convert ussd push transaction xml result to json
+ * @param {String} xml valid transaction xml payload
  * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed result or error
  * @since 0.1.0
@@ -286,7 +401,7 @@ const buildLoginRequest = (options, done) => {
  * @example
  * const { parseTransactionResult } = require('@lykmapipo/tz-mpesa-ussd-push');
  * parseTransactionResult(xml, (error, request) => { ... });
- * // => { header: ..., body: ...}
+ * // => { header: ..., request: ...}
  */
 const parseTransactionResult = (xml, done) => parseRequest(xml, done);
 
@@ -299,8 +414,11 @@ module.exports = exports = {
   channel,
   mode,
   currency,
-  parseRequest,
   buildRequest,
   buildLoginRequest,
+  buildTransactionRequest,
+  parseRequest,
+  parseLoginResponse,
+  parseTransactionResponse,
   parseTransactionResult
 };
