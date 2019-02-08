@@ -14,7 +14,7 @@ const {
   channel,
   mode,
   currency,
-  buildRequest,
+  serialize,
   buildLoginRequest,
   buildTransactionRequest,
   parseRequest,
@@ -62,7 +62,7 @@ describe('tz mpesa ussd push', () => {
       header: { eventId: 2500, token: '96feae744a986aeee4433' },
       request: { username: '123000', password: '123@123' }
     };
-    buildRequest(payload, (error, request) => {
+    serialize(payload, (error, request) => {
       expect(error).to.not.exist;
       expect(request).to.exist;
       expect(_.kebabCase(request)).to.be.equal(_.kebabCase(xml));

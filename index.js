@@ -132,8 +132,8 @@ const transformValue = item => {
 
 
 /**
- * @function buildRequest
- * @name buildRequest
+ * @function serialize
+ * @name serialize
  * @description Build and convert given json payload to ussd push xml request
  * @param {Object} payload valid json payload
  * @param {Function} done callback to invoke on success or error
@@ -143,11 +143,11 @@ const transformValue = item => {
  * @public
  * @static
  * @example
- * const { buildRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * buildRequest(payload, (error, request) => { ... });
+ * const { serialize } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * serialize(payload, (error, request) => { ... });
  * // => String
  */
-const buildRequest = (payload, done) => {
+const serialize = (payload, done) => {
   // prepare header params
   const { header: { token = '?', eventId } } = payload;
 
@@ -230,7 +230,7 @@ const buildLoginRequest = (options, done) => {
   };
 
   // serialize login payload to xml
-  return buildRequest(payload, done);
+  return serialize(payload, done);
 };
 
 
@@ -303,7 +303,7 @@ const buildTransactionRequest = (options, done) => {
   };
 
   // serialize ussd push transaction request payload to xml
-  return buildRequest(payload, done);
+  return serialize(payload, done);
 };
 
 
@@ -441,7 +441,7 @@ module.exports = exports = {
   channel,
   mode,
   currency,
-  buildRequest,
+  serialize,
   buildLoginRequest,
   buildTransactionRequest,
   parseRequest,
