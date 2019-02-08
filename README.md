@@ -18,8 +18,7 @@ npm install --save @lykmapipo/tz-mpesa-ussd-push
 
 ## Usage
 
-```js
-```
+> WIP
 
 ## Environment
 ```js
