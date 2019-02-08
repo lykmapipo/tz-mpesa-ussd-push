@@ -415,8 +415,8 @@ const deserializeTransaction = (xml, done) => deserialize(xml, done);
 
 
 /**
- * @function parseTransactionResult
- * @name parseTransactionResult
+ * @function deserializeResult
+ * @name deserializeResult
  * @description Parse and convert ussd push transaction xml result to json
  * @param {String} xml valid transaction xml payload
  * @param {Function} done callback to invoke on success or error
@@ -426,11 +426,11 @@ const deserializeTransaction = (xml, done) => deserialize(xml, done);
  * @public
  * @static
  * @example
- * const { parseTransactionResult } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseTransactionResult(xml, (error, request) => { ... });
+ * const { deserializeResult } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * deserializeResult(xml, (error, request) => { ... });
  * // => { header: ..., request: ...}
  */
-const parseTransactionResult = (xml, done) => deserialize(xml, done);
+const deserializeResult = (xml, done) => deserialize(xml, done);
 
 
 /* expose */
@@ -447,5 +447,5 @@ module.exports = exports = {
   deserialize,
   deserializeLogin,
   deserializeTransaction,
-  parseTransactionResult
+  deserializeResult
 };
