@@ -308,8 +308,8 @@ const serializeTransaction = (options, done) => {
 
 
 /**
- * @function parseRequest
- * @name parseRequest
+ * @function deserialize
+ * @name deserialize
  * @description Parse and convert generic xml request to json
  * @param {String} xml valid xml payload
  * @param {Function} done callback to invoke on success or error
@@ -319,11 +319,11 @@ const serializeTransaction = (options, done) => {
  * @public
  * @static
  * @example
- * const { parseRequest } = require('@lykmapipo/tz-mpesa-ussd-push');
- * parseRequest(xml, (error, request) => { ... });
+ * const { deserialize } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * deserialize(xml, (error, request) => { ... });
  * // => { header: ..., event: ..., request: ..., response: ...}
  */
-const parseRequest = (xml, done) => {
+const deserialize = (xml, done) => {
   // prepare parse options
   const { processors } = xml2js;
   const { stripPrefix } = processors;
@@ -391,7 +391,7 @@ const parseRequest = (xml, done) => {
  * parseLoginResponse(xml, (error, request) => { ... });
  * // => { header: ..., event: ..., request: ..., response: ...}
  */
-const parseLoginResponse = (xml, done) => parseRequest(xml, done);
+const parseLoginResponse = (xml, done) => deserialize(xml, done);
 
 
 /**
@@ -411,7 +411,7 @@ const parseLoginResponse = (xml, done) => parseRequest(xml, done);
  * parseTransactionResponse(xml, (error, request) => { ... });
  * // => { header: ..., request: ..., response: ...}
  */
-const parseTransactionResponse = (xml, done) => parseRequest(xml, done);
+const parseTransactionResponse = (xml, done) => deserialize(xml, done);
 
 
 /**
@@ -430,7 +430,7 @@ const parseTransactionResponse = (xml, done) => parseRequest(xml, done);
  * parseTransactionResult(xml, (error, request) => { ... });
  * // => { header: ..., request: ...}
  */
-const parseTransactionResult = (xml, done) => parseRequest(xml, done);
+const parseTransactionResult = (xml, done) => deserialize(xml, done);
 
 
 /* expose */
@@ -444,7 +444,7 @@ module.exports = exports = {
   serialize,
   serializeLogin,
   serializeTransaction,
-  parseRequest,
+  deserialize,
   parseLoginResponse,
   parseTransactionResponse,
   parseTransactionResult

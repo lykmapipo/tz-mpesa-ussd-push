@@ -17,7 +17,7 @@ const {
   serialize,
   serializeLogin,
   serializeTransaction,
-  parseRequest,
+  deserialize,
   parseLoginResponse,
   parseTransactionResponse,
   parseTransactionResult
@@ -107,7 +107,7 @@ describe('tz mpesa ussd push', () => {
   it('should deserialize xml to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
-    parseRequest(xml, (error, payload) => {
+    deserialize(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
       const { header, request } = payload;
