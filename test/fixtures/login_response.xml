@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
   <S:Header>
     <ns3:eventid xmlns:ns2="http://www.4cgroup.co.za/genericsoap" xmlns:ns3="http://www.4cgroup.co.za/soapauth">2500</ns3:eventid>

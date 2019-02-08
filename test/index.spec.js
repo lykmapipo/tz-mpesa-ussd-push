@@ -19,6 +19,7 @@ const {
   buildTransactionRequest,
   parseRequest,
   parseLoginResponse,
+  parseTransactionResponse,
   parseTransactionResult
 } = include(__dirname, '..');
 
@@ -143,6 +144,52 @@ describe('tz mpesa ussd push', () => {
         },
         request: { username: 123000, password: '123@123' },
         response: { sessionId: '744a986aeee4433fdf1b2' }
+      });
+      done(error, payload);
+    });
+  });
+
+  it('should deserialize transaction response to json', (done) => {
+    const xmlPath = `${__dirname}/fixtures/transaction_response.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    parseTransactionResponse(xml, (error, payload) => {
+      expect(error).to.not.exist;
+      expect(payload).to.exist;
+      const { header, event, request, response } = payload;
+      expect(header).to.exist;
+      expect(header).to.be.an('object');
+      expect(event).to.exist;
+      expect(event).to.be.an('object');
+      expect(request).to.exist;
+      expect(request).to.be.an('object');
+      expect(response).to.exist;
+      expect(response).to.be.an('object');
+      expect(payload).to.be.eql({
+        header: { eventId: 40009 },
+        event: {
+          code: 3,
+          description: 'Processed',
+          detail: 'Processed',
+          transactionId: 'e4245ff7a2154b59a2a5e778c2806712'
+        },
+        request: {
+          customerMsisdn: 255754001001,
+          businessName: 'MPESA',
+          businessNumber: 338899,
+          currency: 'TZS',
+          date: moment('2019020804', 'YYYYMMDDHH').toDate(),
+          amount: 1500,
+          thirdPartyReference: 'A5FK3170',
+          command: 'customerLipa',
+          callBackChannel: 1,
+          callbackDestination: 'https://api.example.com/webhooks/payments',
+          username: 338899
+        },
+        response: {
+          thirdPartyReference: 'A5FK3170',
+          insightReference: '580FBEBAF2F9FF43E0540208206B0EEF',
+          responseCode: 0
+        }
       });
       done(error, payload);
     });

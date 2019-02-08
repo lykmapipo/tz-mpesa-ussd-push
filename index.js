@@ -19,12 +19,10 @@ const REQUEST_DATE_FORMAT = 'YYYYMMDDHH';
 const REQUEST_HEADER_TAG = 'envelope.header';
 const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
 const RESPONSE_HEADER_TAG = 'envelope.header';
-const RESPONSE_EVENT_DATA_TAG =
-  'envelope.body.getGenericResultResponse.soapapiResult.eventInfo';
-const RESPONSE_REQUEST_DATA_TAG =
-  'envelope.body.getGenericResultResponse.soapapiResult.request.dataItem';
-const RESPONSE_DATA_TAG =
-  'envelope.body.getGenericResultResponse.soapapiResult.response.dataItem';
+const RESPONSE_TAG = 'envelope.body.getGenericResultResponse.soapapiResult';
+const RESPONSE_EVENT_DATA_TAG = `${RESPONSE_TAG}.eventInfo`;
+const RESPONSE_REQUEST_DATA_TAG = `${RESPONSE_TAG}.request.dataItem`;
+const RESPONSE_DATA_TAG = `${RESPONSE_TAG}.response.dataItem`;
 const $ = {
   'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
   'xmlns:soap': 'http://www.4cgroup.co.za/soapauth',
