@@ -91,7 +91,7 @@ describe('tz mpesa ussd push', () => {
     const xml = readFile('transaction_request.xml');
     const payload = {
       username: '338899',
-      token: '744a986aeee4433fdf1b2',
+      sessionId: '744a986aeee4433fdf1b2',
       msisdn: '255754001001',
       businessName: 'MPESA',
       businessNumber: '338899',

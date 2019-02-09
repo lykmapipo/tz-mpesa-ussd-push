@@ -261,7 +261,7 @@ const serializeTransaction = (options, done) => {
   // obtain transaction details
   const {
     username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
-      token,
+      sessionId,
       msisdn,
       businessName = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
       businessNumber = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER'),
@@ -275,7 +275,7 @@ const serializeTransaction = (options, done) => {
   // ensure valid transaction details
   const isValid = (
     (amount > 0) &&
-    areNotEmpty(username, token, msisdn, currency) &&
+    areNotEmpty(username, sessionId, msisdn, currency) &&
     areNotEmpty(businessName, businessNumber, reference, callback)
   );
 
@@ -287,9 +287,8 @@ const serializeTransaction = (options, done) => {
   }
 
   // prepare ussd push transaction request payload
-  const eventId = 40009;
   const payload = {
-    header: { token, eventId },
+    header: { token: sessionId, eventId: 40009 },
     request: {
       'CustomerMSISDN': msisdn,
       'BusinessName': businessName,
@@ -488,7 +487,7 @@ const login = (options, done) => {
 
   // ensure api urls
   if (_.isEmpty(URL)) {
-    let error = new Error('Missing Login URL');
+    let error = new Error('Missing API Login URL');
     error.status = 400;
     return done(error);
   }
@@ -538,6 +537,11 @@ const login = (options, done) => {
 };
 
 
+const charge = (transaction, done) => {
+  done();
+};
+
+
 /* expose */
 module.exports = exports = {
   country,
@@ -553,5 +557,6 @@ module.exports = exports = {
   deserializeLogin,
   deserializeTransaction,
   deserializeResult,
-  login
+  login,
+  charge
 };
