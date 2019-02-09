@@ -13,6 +13,9 @@ const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
 
 /* constants */
+const AUTH_FAILED = 'Authentication Failed';
+const SESSION_EXPIRED = 'Session Expired';
+const INVALID_CREDENTIALS = 'Invalid Credentials';
 const RESULT_DATE_FORMAT = 'YYYYMMDD HHmmss';
 const REQUEST_DATE_FORMAT = 'YYYYMMDDHH';
 const REQUEST_HEADER_TAG = 'envelope.header';
@@ -369,6 +372,31 @@ const deserialize = (xml, done) => {
     let response = [].concat(_.get(json, RESPONSE_DATA_TAG, []));
     response = itemize(response);
 
+    // handle authentication failed
+    const authFailed = (event && event.detail === AUTH_FAILED);
+    if (authFailed) {
+      let error = new Error(AUTH_FAILED);
+      error.status = 401;
+      return done(error);
+    }
+
+    // handle session expired
+    const sessionExpired = (event && event.detail === SESSION_EXPIRED);
+    if (sessionExpired) {
+      let error = new Error(SESSION_EXPIRED);
+      error.status = 401;
+      return done(error);
+    }
+
+    // handle login failed
+    const invalidCredentials =
+      (response && response.sessionId === INVALID_CREDENTIALS);
+    if (invalidCredentials) {
+      let error = new Error(INVALID_CREDENTIALS);
+      error.status = 401;
+      return done(error);
+    }
+
     // return request
     return done(null, { header, event, request, response });
   });
@@ -487,7 +515,18 @@ const login = (options, done) => {
 
   // parse login response
   const parseLoginResponse = (response, next) => {
-    return deserializeLogin(response, next);
+    return deserializeLogin(response, (error, payload) => {
+      // back off on error
+      if (error) { return next(error); }
+
+      // prepare simplified body
+      const transactionId = _.get(payload, 'event.transactionId');
+      const sessionId = _.get(payload, 'response.sessionId');
+      const body = { transactionId, sessionId };
+
+      // continue
+      return next(error, payload, body);
+    });
   };
 
   // do login

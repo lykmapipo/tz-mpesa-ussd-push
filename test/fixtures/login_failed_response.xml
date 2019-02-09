@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Header>
+    <ns3:eventid xmlns:ns2="http://www.4cgroup.co.za/genericsoap" xmlns:ns3="http://www.4cgroup.co.za/soapauth">2500</ns3:eventid>
+  </S:Header>
+  <S:Body>
+    <ns2:getGenericResultResponse xmlns:ns2="http://www.4cgroup.co.za/genericsoap" xmlns:ns3="http://www.4cgroup.co.za/soapauth">
+      <SOAPAPIResult>
+        <eventInfo>
+          <code>3</code>
+          <description>Processed</description>
+          <detail>Processed</detail>
+          <transactionID>504830a4f038cb842960cc</transactionID>
+        </eventInfo>
+        <request>
+          <dataItem>
+            <name>Username</name>
+            <type>String</type>
+            <value>123000</value>
+          </dataItem>
+          <dataItem>
+            <name>Password</name>
+            <type>String</type>
+            <value>123@123</value>
+          </dataItem>
+        </request>
+        <response>
+          <dataItem>
+            <name>SessionId</name>
+            <type>String</type>
+            <value>Invalid Credentials</value>
+          </dataItem>
+        </response>
+      </SOAPAPIResult>
+    </ns2:getGenericResultResponse>
+  </S:Body>
+</S:Envelope>

@@ -34,11 +34,12 @@ describe('tz mpesa ussd push - login', () => {
       .reply(200, responseXml);
   });
 
-  it('should succeed using provided credentials', (done) => {
+  it('should succeed with valid credentials', (done) => {
     const credentials = { username: '123000', password: '123@123' };
-    login(credentials, (error, response) => {
+    login(credentials, (error, response, body) => {
       expect(error).to.not.exist;
       expect(response).to.exist;
+      expect(body).to.exist;
       expect(response).to.be.eql({
         header: { eventId: 2500 },
         event: {
@@ -50,9 +51,17 @@ describe('tz mpesa ussd push - login', () => {
         request: { username: 123000, password: '123@123' },
         response: { sessionId: '744a986aeee4433fdf1b2' }
       });
+      expect(body).to.be.eql({
+        transactionId: '504830a4f038cb842960cc',
+        sessionId: '744a986aeee4433fdf1b2'
+      });
       done(error, response);
     });
   });
+
+  it('should handle authentication failed');
+  it('should handle invalid credentials');
+  it('should handle session expired');
 
   after(() => nock.cleanAll());
   after(() => nock.enableNetConnect());
