@@ -141,7 +141,8 @@ const withDefaults = optns => {
     baseUrl: getString('TZ_MPESA_USSD_PUSH_BASE_URL'),
     loginUrl: getString('TZ_MPESA_USSD_PUSH_LOGIN_URL'),
     requestUrl: getString('TZ_MPESA_USSD_PUSH_REQUEST_URL'),
-    callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
+    callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL'),
+    currency: currency
   }, optns);
 
   // compact and return
@@ -310,26 +311,29 @@ const serializeLogin = (options, done) => {
  */
 const serializeTransaction = (options, done) => {
   // ensure transaction
-  const transaction = _.merge({}, options);
+  const transaction = withDefaults(options);
 
   // obtain transaction details
   const {
-    username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
-      sessionId,
-      msisdn,
-      businessName = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
-      businessNumber = getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER'),
-      currency = 'TZS',
-      date = new Date(),
-      amount,
-      reference,
-      callbackUrl = getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
+    username,
+    sessionId,
+    msisdn,
+    businessName,
+    businessNumber,
+    currency,
+    date = new Date(),
+    amount,
+    reference,
+    callbackUrl,
+    requestEventId,
+    requestCommand
   } = transaction;
 
   // ensure valid transaction details
   const isValid = (
     (amount > 0) &&
     areNotEmpty(username, sessionId, msisdn, currency) &&
+    areNotEmpty(requestEventId, requestCommand) &&
     areNotEmpty(businessName, businessNumber, reference, callbackUrl)
   );
 
@@ -337,12 +341,13 @@ const serializeTransaction = (options, done) => {
   if (!isValid) {
     let error = new Error('Invalid Transaction Details');
     error.status = 400;
+    error.data = transaction;
     return done(error);
   }
 
   // prepare ussd push transaction request payload
   const payload = {
-    header: { token: sessionId, eventId: 40009 },
+    header: { token: sessionId, eventId: requestEventId },
     request: {
       'CustomerMSISDN': msisdn,
       'BusinessName': businessName,
@@ -351,7 +356,7 @@ const serializeTransaction = (options, done) => {
       'Date': moment(date).format(REQUEST_DATE_FORMAT),
       'Amount': amount,
       'ThirdPartyReference': reference,
-      'Command': 'customerLipa',
+      'Command': requestCommand,
       'CallBackChannel': 1,
       'CallbackDestination': callbackUrl,
       'Username': username
