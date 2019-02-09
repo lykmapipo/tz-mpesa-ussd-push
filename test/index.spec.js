@@ -98,7 +98,7 @@ describe('tz mpesa ussd push', () => {
       date: moment('2019020804', 'YYYYMMDDHH').toDate(),
       amount: 1500,
       reference: 'A5FK3170',
-      callback: 'https://api.example.com/webhooks/payments'
+      callbackUrl: 'https://api.example.com/webhooks/payments'
     };
     serializeTransaction(payload, (error, request) => {
       expect(error).to.not.exist;

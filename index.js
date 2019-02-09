@@ -7,7 +7,7 @@ const moment = require('moment');
 const xml2js = require('xml2js');
 const request = require('request');
 const { waterfall } = require('async');
-const { areNotEmpty } = require('@lykmapipo/common');
+const { areNotEmpty, compact } = require('@lykmapipo/common');
 const { getString } = require('@lykmapipo/env');
 const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
@@ -35,6 +35,8 @@ const $ = {
 /**
  * @name country
  * @description Human readable country code of a payment processing entity.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -46,6 +48,8 @@ const country = 'TZ';
 /**
  * @name provider
  * @description Human readable name of a payment processing entity.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -57,6 +61,8 @@ const provider = 'Vodacom';
 /**
  * @name method
  * @description Human readable supported method of a payment.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -68,6 +74,8 @@ const method = 'Mobile Money';
 /**
  * @name channel
  * @description Human readable supported channel of a payment.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -79,6 +87,8 @@ const channel = 'MPESA';
 /**
  * @name mode
  * @description Human readable supported mode of a payment.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -90,6 +100,8 @@ const mode = 'USSD Push';
 /**
  * @name currency
  * @description Currency accepted for payment.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -97,6 +109,45 @@ const mode = 'USSD Push';
  */
 const currency = 'TZS';
 
+/**
+ * @function withDefaults
+ * @name withDefaults
+ * @description merge provided options with defaults.
+ * @param {Object} [optns] provided options
+ * @return {Object} merged options
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ * const { withDefaults } = require('@lykmapipo/');
+ * const optns = { username: ..., loginUrl: ..., requestUrl: ...};
+ * withDefaults(optns) // => { username: ..., loginUrl: ..., requestUrl: ...};
+ */
+const withDefaults = optns => {
+  // merge defaults
+  let options = _.merge({}, {
+    username: getString('TZ_MPESA_USSD_PUSH_USERNAME'),
+    password: getString('TZ_MPESA_USSD_PUSH_PASSWORD'),
+    businessName: getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
+    businessNumber: getString('TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER'),
+    loginEventId: getString('TZ_MPESA_USSD_PUSH_LOGIN_EVENT_ID', '2500'),
+    requestEventId: getString('TZ_MPESA_USSD_PUSH_REQUEST_EVENT_ID',
+      '40009'),
+    requestCommand: getString('TZ_MPESA_USSD_PUSH_REQUEST_COMMAND',
+      'customerLipa'),
+    baseUrl: getString('TZ_MPESA_USSD_PUSH_BASE_URL'),
+    loginUrl: getString('TZ_MPESA_USSD_PUSH_LOGIN_URL'),
+    requestUrl: getString('TZ_MPESA_USSD_PUSH_REQUEST_URL'),
+    callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
+  }, optns);
+
+  // compact and return
+  options = compact(options);
+  return options;
+};
 
 /**
  * @function transformValue
@@ -104,6 +155,8 @@ const currency = 'TZS';
  * @description Transform data item value to js object
  * @param {Object} item data item
  * @return {Object} transformed value
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @private
@@ -140,6 +193,8 @@ const transformValue = item => {
  * @param {Object} payload valid json payload
  * @param {Function} done callback to invoke on success or error
  * @return {String|Error} xml string request or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -196,6 +251,8 @@ const serialize = (payload, done) => {
  * @param {String} options.password valid login password
  * @param {Function} done callback to invoke on success or error
  * @return {String|Error} valid xml string for login request or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -245,6 +302,8 @@ const serializeLogin = (options, done) => {
  * @param {Object} options valid transaction details
  * @param {Function} done callback to invoke on success or error
  * @return {String|Error} valid xml string for transaction request or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -269,14 +328,14 @@ const serializeTransaction = (options, done) => {
       date = new Date(),
       amount,
       reference,
-      callback = getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
+      callbackUrl = getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL')
   } = transaction;
 
   // ensure valid transaction details
   const isValid = (
     (amount > 0) &&
     areNotEmpty(username, sessionId, msisdn, currency) &&
-    areNotEmpty(businessName, businessNumber, reference, callback)
+    areNotEmpty(businessName, businessNumber, reference, callbackUrl)
   );
 
   // back-off if invalid transaction
@@ -299,7 +358,7 @@ const serializeTransaction = (options, done) => {
       'ThirdPartyReference': reference,
       'Command': 'customerLipa',
       'CallBackChannel': 1,
-      'CallbackDestination': callback,
+      'CallbackDestination': callbackUrl,
       'Username': username
     }
   };
@@ -316,6 +375,8 @@ const serializeTransaction = (options, done) => {
  * @param {String} xml valid xml payload
  * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed request or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -409,6 +470,8 @@ const deserialize = (xml, done) => {
  * @param {String} xml valid login xml payload
  * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed result or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -429,6 +492,8 @@ const deserializeLogin = (xml, done) => deserialize(xml, done);
  * @param {String} xml valid transaction response xml payload
  * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed result or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -448,6 +513,8 @@ const deserializeTransaction = (xml, done) => deserialize(xml, done);
  * @param {String} xml valid transaction xml payload
  * @param {Function} done callback to invoke on success or error
  * @return {Object|Error} parsed result or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -463,12 +530,14 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
 /**
  * @function login
  * @name login
- * @description
+ * @description Issue login request to ussd push API server
  * @param {Object} options valid login credentials
  * @param {String} options.username valid login username
  * @param {String} options.password valid login password
  * @param {Function} done callback to invoke on success or error
  * @return {String|Error} valid login response or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
  * @since 0.1.0
  * @version 0.1.0
  * @public
@@ -483,7 +552,7 @@ const login = (options, done) => {
   // obtain api urls
   const BASE_URL = getString('TZ_MPESA_USSD_PUSH_BASE_URL');
   const LOGIN_PATH = getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH');
-  const URL = _.clone(options.url || `${BASE_URL}${LOGIN_PATH}`);
+  const URL = _.clone(options.loginUrl || `${BASE_URL}${LOGIN_PATH}`);
 
   // ensure api urls
   if (_.isEmpty(URL)) {
@@ -537,8 +606,104 @@ const login = (options, done) => {
 };
 
 
-const charge = (transaction, done) => {
-  done();
+/**
+ * @function charge
+ * @name charge
+ * @description Initiate ussd push payment request customer via ussd push API
+ * server
+ * @param {Object} options valid transaction options
+ * @param {String} options.msisdn valid customer mobile phone number
+ * @param {Number} options.amount valid transaction amount
+ * @param {String} options.reference valid transaction reference number
+ * @param {Function} done callback to invoke on success or error
+ * @return {String|Error} valid charge response or error
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { charge } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' }
+ * charge(options, (error, response) => { ... });
+ * // => { reference: ..., transactionId: ....}
+ */
+const charge = (options, done) => {
+  // obtain api urls
+  const BASE_URL = getString('TZ_MPESA_USSD_PUSH_BASE_URL');
+  const REQUEST_PATH = getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH');
+  const URL = _.clone(options.url || `${BASE_URL}${REQUEST_PATH}`);
+
+  // ensure api urls
+  if (_.isEmpty(URL)) {
+    let error = new Error('Missing API Request URL');
+    error.status = 400;
+    return done(error);
+  }
+
+  // merge defaults
+  // username: '338899',
+  //     sessionId: '744a986aeee4433fdf1b2',
+  //     msisdn: '255754001001',
+  //     businessName: 'MPESA',
+  //     businessNumber: '338899',
+  //     date: moment('2019020804', 'YYYYMMDDHH').toDate(),
+  //     amount: 1500,
+  //     reference: 'A5FK3170',
+  //     callback: 'https://api.example.com/webhooks/payments'
+
+  // issue login request
+  const issueLoginRequest = next => login(options, next);
+
+  // prepare request xml payload
+  const prepareChargeRequest = (response, body, next) => {
+    // prepare transaction
+    const { sessionId } = body;
+    const transaction = _.merge({}, { sessionId }, options);
+    serializeTransaction(transaction, next);
+  };
+
+  // issue request
+  const issueChargeRequest = (payload, next) => {
+    // prepare charge request options
+    const options = {
+      url: URL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/xml',
+        'Accept': 'application/xml'
+      },
+      body: payload
+    };
+
+    // send charge request
+    return request(options, (error, response, body) => next(error, body));
+  };
+
+  // parse charge response
+  const parseChargeResponse = (response, next) => {
+    return deserializeTransaction(response, (error, payload) => {
+      // back off on error
+      if (error) { return next(error); }
+
+      // prepare simplified body
+      const transactionId = _.get(payload, 'event.transactionId');
+      const reference = _.get(payload, 'response.insightReference');
+      const body = { transactionId, reference };
+
+      // continue
+      return next(error, payload, body);
+    });
+  };
+
+  // do charge
+  return waterfall([
+    issueLoginRequest,
+    prepareChargeRequest,
+    issueChargeRequest,
+    parseChargeResponse
+  ], done);
 };
 
 
@@ -550,6 +715,7 @@ module.exports = exports = {
   channel,
   mode,
   currency,
+  withDefaults,
   serialize,
   serializeLogin,
   serializeTransaction,
