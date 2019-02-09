@@ -18,11 +18,15 @@ npm install --save @lykmapipo/tz-mpesa-ussd-push
 
 ## Usage
 ```js
-const { login } = require('@lykmapipo/tz-mpesa-ussd-push');
+const { login, charge } = require('@lykmapipo/tz-mpesa-ussd-push');
 
-const credentials = { username: '123000', password: '123@123' };
-login(credentials, (error, response, body) => { ... });
+const options = { username: '123000', password: '123@123' };
+login(options, (error, response, body) => { ... });
 // => body: { sessionId: ..., transactionId: ... }
+
+const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' };
+charge(options, (error, response, body) => { ... });
+// => body: { transactionId: ..., reference: ... }
 ```
 
 ## Environment
