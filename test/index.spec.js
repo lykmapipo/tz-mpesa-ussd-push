@@ -221,7 +221,7 @@ describe('tz mpesa ussd push', () => {
           businessNumber: 888888,
           currency: 'TZS',
           amount: 1500,
-          date: new Date('2019-02-08T16:01:47.000Z'),
+          date: moment('20190208 190147', 'YYYYMMDD HHmmss').toDate(),
           thirdPartyReference: 'E5FK3170',
           insightReference: '5F8648318CD95BC3E0531600980A264E'
         },

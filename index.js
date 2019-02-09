@@ -5,12 +5,11 @@
 const _ = require('lodash');
 const moment = require('moment');
 const xml2js = require('xml2js');
+const request = require('request');
+const { waterfall } = require('async');
 const { areNotEmpty } = require('@lykmapipo/common');
 const { getString } = require('@lykmapipo/env');
-const {
-  parse: xmlToJson,
-  build: jsonToXml
-} = require('paywell-xml');
+const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
 
 /* constants */
@@ -208,9 +207,10 @@ const serializeLogin = (options, done) => {
   const credentials = _.merge({}, options);
 
   // ensure username and password
+  const defaultUsername = getString('TZ_MPESA_USSD_PUSH_USERNAME');
+  const defaultPassword = getString('TZ_MPESA_USSD_PUSH_PASSWORD');
   const {
-    username = getString('TZ_MPESA_USSD_PUSH_USERNAME'),
-      password = getString('TZ_MPESA_USSD_PUSH_PASSWORD')
+    username = defaultUsername, password = defaultPassword
   } = credentials;
   const isValid = !_.isEmpty(username) && !_.isEmpty(password);
 
@@ -433,6 +433,72 @@ const deserializeTransaction = (xml, done) => deserialize(xml, done);
 const deserializeResult = (xml, done) => deserialize(xml, done);
 
 
+/**
+ * @function login
+ * @name login
+ * @description
+ * @param {Object} options valid login credentials
+ * @param {String} options.username valid login username
+ * @param {String} options.password valid login password
+ * @param {Function} done callback to invoke on success or error
+ * @return {String|Error} valid login response or error
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { login } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * const credentials = { username: ..., password: ...};
+ * login(credentials, (error, response) => { ... });
+ * // => { sessionId: ...}
+ */
+const login = (options, done) => {
+  // obtain api urls
+  const BASE_URL = getString('TZ_MPESA_USSD_PUSH_BASE_URL');
+  const LOGIN_PATH = getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH');
+  const URL = _.clone(options.url || `${BASE_URL}${LOGIN_PATH}`);
+
+  // ensure api urls
+  if (_.isEmpty(URL)) {
+    let error = new Error('Missing Login URL');
+    error.status = 400;
+    return done(error);
+  }
+
+  // prepare login xml payload
+  const prepareLoginPayload = next => serializeLogin(options, next);
+
+  // issue login request
+  const issueLoginRequest = (payload, next) => {
+    // prepare login request options
+    const options = {
+      url: URL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/xml',
+        'Accept': 'application/xml'
+      },
+      body: payload
+    };
+
+    // send login request
+    return request(options, (error, response, body) => next(error, body));
+  };
+
+  // parse login response
+  const parseLoginResponse = (response, next) => {
+    return deserializeLogin(response, next);
+  };
+
+  // do login
+  return waterfall([
+    prepareLoginPayload,
+    issueLoginRequest,
+    parseLoginResponse
+  ], done);
+};
+
+
 /* expose */
 module.exports = exports = {
   country,
@@ -447,5 +513,6 @@ module.exports = exports = {
   deserialize,
   deserializeLogin,
   deserializeTransaction,
-  deserializeResult
+  deserializeResult,
+  login
 };
