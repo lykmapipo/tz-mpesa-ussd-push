@@ -132,6 +132,32 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
+  it('should deserialize session expired to error', (done) => {
+    const xmlPath =
+      `${__dirname}/fixtures/session_expired_response.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    deserialize(xml, (error, payload) => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Session Expired');
+      expect(error.status).to.be.equal(401);
+      expect(payload).to.not.exist;
+      done(null, payload);
+    });
+  });
+
+  it('should deserialize login failed to error', (done) => {
+    const xmlPath =
+      `${__dirname}/fixtures/login_failed_response.xml`;
+    const xml = readFileSync(xmlPath, 'UTF-8');
+    deserialize(xml, (error, payload) => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Invalid Credentials');
+      expect(error.status).to.be.equal(401);
+      expect(payload).to.not.exist;
+      done(null, payload);
+    });
+  });
+
   it('should deserialize login response to json', (done) => {
     const xmlPath = `${__dirname}/fixtures/login_response.xml`;
     const xml = readFileSync(xmlPath, 'UTF-8');
