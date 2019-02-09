@@ -17,7 +17,7 @@ const readFile = path => {
 };
 
 
-describe.skip('tz mpesa ussd push - charge', () => {
+describe('tz mpesa ussd push - charge', () => {
   const BASE_URL = 'https://ussd.vodacom.io';
   const LOGIN_PATH = '/transactions';
   const REQUEST_PATH = '/transactions';
@@ -79,10 +79,7 @@ describe.skip('tz mpesa ussd push - charge', () => {
   });
 
   it('should handle authentication failed', done => {
-    nock(BASE_URL).post(REQUEST_PATH, body => {
-      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
-      return true;
-    }).reply(200, authFailedXml);
+    nock(BASE_URL).post(REQUEST_PATH).reply(200, authFailedXml);
 
     const options = {
       msisdn: '255754001001',
@@ -98,10 +95,7 @@ describe.skip('tz mpesa ussd push - charge', () => {
   });
 
   it('should handle invalid charge', done => {
-    nock(BASE_URL).post(REQUEST_PATH, body => {
-      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
-      return true;
-    }).reply(200, failedLoginXml);
+    nock(BASE_URL).post(REQUEST_PATH).reply(200, failedLoginXml);
 
     const options = {
       msisdn: '255754001001',
@@ -117,10 +111,7 @@ describe.skip('tz mpesa ussd push - charge', () => {
   });
 
   it('should handle session expired', done => {
-    nock(BASE_URL).post(REQUEST_PATH, body => {
-      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
-      return true;
-    }).reply(200, sessionExpiredXml);
+    nock(BASE_URL).post(REQUEST_PATH).reply(200, sessionExpiredXml);
 
     const options = {
       msisdn: '255754001001',
