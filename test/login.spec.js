@@ -20,6 +20,11 @@ const readFile = path => {
 describe('tz mpesa ussd push - login', () => {
   const BASE_URL = 'https://ussd.vodacom.io';
   const LOGIN_PATH = '/transactions';
+  const REQUEST_PATH = '/transactions';
+  const USERNAME = '123000';
+  const PASSWORD = '123@123';
+  const BUSINESS_NAME = 'MPESA';
+  const BUSINESS_NUMBER = '338899';
 
   const requestXml = readFile('login_request.xml');
   const responseXml = readFile('login_response.xml');
@@ -30,6 +35,11 @@ describe('tz mpesa ussd push - login', () => {
   before(() => {
     process.env.TZ_MPESA_USSD_PUSH_BASE_URL = BASE_URL;
     process.env.TZ_MPESA_USSD_PUSH_LOGIN_PATH = LOGIN_PATH;
+    process.env.TZ_MPESA_USSD_PUSH_REQUEST_PATH = REQUEST_PATH;
+    process.env.TZ_MPESA_USSD_PUSH_USERNAME = USERNAME;
+    process.env.TZ_MPESA_USSD_PUSH_PASSWORD = PASSWORD;
+    process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME = BUSINESS_NAME;
+    process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER = BUSINESS_NUMBER;
   });
 
   beforeEach(() => nock.cleanAll());
@@ -114,5 +124,10 @@ describe('tz mpesa ussd push - login', () => {
   after(() => {
     delete process.env.TZ_MPESA_USSD_PUSH_BASE_URL;
     delete process.env.TZ_MPESA_USSD_PUSH_LOGIN_PATH;
+    delete process.env.TZ_MPESA_USSD_PUSH_REQUEST_PATH;
+    delete process.env.TZ_MPESA_USSD_PUSH_USERNAME;
+    delete process.env.TZ_MPESA_USSD_PUSH_PASSWORD;
+    delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME;
+    delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER;
   });
 });

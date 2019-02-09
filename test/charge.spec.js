@@ -19,6 +19,7 @@ const readFile = path => {
 
 describe.skip('tz mpesa ussd push - charge', () => {
   const BASE_URL = 'https://ussd.vodacom.io';
+  const LOGIN_PATH = '/transactions';
   const REQUEST_PATH = '/transactions';
   const USERNAME = '123000';
   const PASSWORD = '123@123';
@@ -33,6 +34,7 @@ describe.skip('tz mpesa ussd push - charge', () => {
 
   before(() => {
     process.env.TZ_MPESA_USSD_PUSH_BASE_URL = BASE_URL;
+    process.env.TZ_MPESA_USSD_PUSH_LOGIN_PATH = LOGIN_PATH;
     process.env.TZ_MPESA_USSD_PUSH_REQUEST_PATH = REQUEST_PATH;
     process.env.TZ_MPESA_USSD_PUSH_USERNAME = USERNAME;
     process.env.TZ_MPESA_USSD_PUSH_PASSWORD = PASSWORD;
@@ -137,6 +139,7 @@ describe.skip('tz mpesa ussd push - charge', () => {
   after(() => nock.enableNetConnect());
   after(() => {
     delete process.env.TZ_MPESA_USSD_PUSH_BASE_URL;
+    delete process.env.TZ_MPESA_USSD_PUSH_LOGIN_PATH;
     delete process.env.TZ_MPESA_USSD_PUSH_REQUEST_PATH;
     delete process.env.TZ_MPESA_USSD_PUSH_USERNAME;
     delete process.env.TZ_MPESA_USSD_PUSH_PASSWORD;

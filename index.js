@@ -139,11 +139,19 @@ const withDefaults = optns => {
     requestCommand: getString('TZ_MPESA_USSD_PUSH_REQUEST_COMMAND',
       'customerLipa'),
     baseUrl: getString('TZ_MPESA_USSD_PUSH_BASE_URL'),
-    loginUrl: getString('TZ_MPESA_USSD_PUSH_LOGIN_URL'),
-    requestUrl: getString('TZ_MPESA_USSD_PUSH_REQUEST_URL'),
+    loginPath: getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH'),
+    requestPath: getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH'),
     callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL'),
     currency: currency
   }, optns);
+
+  // ensure login url
+  options.loginUrl =
+    (options.loginUrl || `${options.baseUrl}${options.loginPath}`);
+
+  // ensure request url
+  options.requestUrl =
+    (options.requestUrl || `${options.baseUrl}${options.requestPath}`);
 
   // compact and return
   options = compact(options);
@@ -267,6 +275,15 @@ const serializeLogin = (options, done) => {
   // ensure credentials
   const credentials = withDefaults(options);
 
+  // ensure api login url
+  const { loginUrl } = credentials;
+  if (_.isEmpty(loginUrl)) {
+    let error = new Error('Missing API Login URL');
+    error.status = 400;
+    error.data = credentials;
+    return done(error);
+  }
+
   // ensure username and password
   const { username, password, loginEventId } = credentials;
   const isValid = areNotEmpty(username, password, loginEventId);
@@ -312,6 +329,15 @@ const serializeLogin = (options, done) => {
 const serializeTransaction = (options, done) => {
   // ensure transaction
   const transaction = withDefaults(options);
+
+  // ensure api request url
+  const { requestUrl } = transaction;
+  if (_.isEmpty(requestUrl)) {
+    let error = new Error('Missing API Request URL');
+    error.status = 400;
+    error.data = transaction;
+    return done(error);
+  }
 
   // obtain transaction details
   const {
@@ -549,17 +575,8 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
  * // => { sessionId: ...}
  */
 const login = (options, done) => {
-  // obtain api urls
-  const BASE_URL = getString('TZ_MPESA_USSD_PUSH_BASE_URL');
-  const LOGIN_PATH = getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH');
-  const URL = _.clone(options.loginUrl || `${BASE_URL}${LOGIN_PATH}`);
-
-  // ensure api urls
-  if (_.isEmpty(URL)) {
-    let error = new Error('Missing API Login URL');
-    error.status = 400;
-    return done(error);
-  }
+  // obtain login url
+  const { loginUrl } = withDefaults(options);
 
   // prepare login xml payload
   const prepareLoginPayload = next => serializeLogin(options, next);
@@ -568,7 +585,7 @@ const login = (options, done) => {
   const issueLoginRequest = (payload, next) => {
     // prepare login request options
     const options = {
-      url: URL,
+      url: loginUrl,
       method: 'POST',
       headers: {
         'Content-Type': 'application/xml',
@@ -630,28 +647,8 @@ const login = (options, done) => {
  * // => { reference: ..., transactionId: ....}
  */
 const charge = (options, done) => {
-  // obtain api urls
-  const BASE_URL = getString('TZ_MPESA_USSD_PUSH_BASE_URL');
-  const REQUEST_PATH = getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH');
-  const URL = _.clone(options.url || `${BASE_URL}${REQUEST_PATH}`);
-
-  // ensure api urls
-  if (_.isEmpty(URL)) {
-    let error = new Error('Missing API Request URL');
-    error.status = 400;
-    return done(error);
-  }
-
-  // merge defaults
-  // username: '338899',
-  //     sessionId: '744a986aeee4433fdf1b2',
-  //     msisdn: '255754001001',
-  //     businessName: 'MPESA',
-  //     businessNumber: '338899',
-  //     date: moment('2019020804', 'YYYYMMDDHH').toDate(),
-  //     amount: 1500,
-  //     reference: 'A5FK3170',
-  //     callback: 'https://api.example.com/webhooks/payments'
+  // obtain request url
+  const { requestUrl } = withDefaults(options);
 
   // issue login request
   const issueLoginRequest = next => login(options, next);
@@ -668,7 +665,7 @@ const charge = (options, done) => {
   const issueChargeRequest = (payload, next) => {
     // prepare charge request options
     const options = {
-      url: URL,
+      url: requestUrl,
       method: 'POST',
       headers: {
         'Content-Type': 'application/xml',
