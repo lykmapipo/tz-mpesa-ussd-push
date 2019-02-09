@@ -21,8 +21,8 @@ npm install --save @lykmapipo/tz-mpesa-ussd-push
 const { login } = require('@lykmapipo/tz-mpesa-ussd-push');
 
 const credentials = { username: '123000', password: '123@123' };
-login(credentials, (error, response) => { ... });
-// => { response: { sessionId: '744a986aeee4433fdf1b2' } }
+login(credentials, (error, response, body) => { ... });
+// => body: { sessionId: ..., transactionId: ... }
 ```
 
 ## Environment
@@ -32,8 +32,9 @@ TZ_MPESA_USSD_PUSH_PASSWORD=
 TZ_MPESA_USSD_PUSH_BUSINESS_NAME=
 TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER=
 TZ_MPESA_USSD_PUSH_CALLBACK_URL=
-TZ_MPESA_USSD_PUSH_LOGIN_EVENT_ID=
-TZ_MPESA_USSD_PUSH_REQUEST_EVENT_ID=
+TZ_MPESA_USSD_PUSH_LOGIN_EVENT_ID=2500
+TZ_MPESA_USSD_PUSH_REQUEST_EVENT_ID=40009
+TZ_MPESA_USSD_PUSH_REQUEST_COMMAND=customerLipa
 TZ_MPESA_USSD_PUSH_BASE_URL=
 TZ_MPESA_USSD_PUSH_LOGIN_PATH=
 ```
