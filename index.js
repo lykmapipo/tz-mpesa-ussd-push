@@ -264,28 +264,23 @@ const serialize = (payload, done) => {
  */
 const serializeLogin = (options, done) => {
   // ensure credentials
-  const credentials = _.merge({}, options);
+  const credentials = withDefaults(options);
 
   // ensure username and password
-  const defaultUsername = getString('TZ_MPESA_USSD_PUSH_USERNAME');
-  const defaultPassword = getString('TZ_MPESA_USSD_PUSH_PASSWORD');
-  const {
-    username = defaultUsername, password = defaultPassword
-  } = credentials;
-  const isValid = !_.isEmpty(username) && !_.isEmpty(password);
+  const { username, password, loginEventId } = credentials;
+  const isValid = areNotEmpty(username, password, loginEventId);
 
   // back-off if invalid credentials
   if (!isValid) {
     let error = new Error('Invalid Login Credentials');
     error.status = 400;
+    error.data = credentials;
     return done(error);
   }
 
   // prepare ussd push login payload
-  const token = '?';
-  const eventId = 2500;
   const payload = {
-    header: { token, eventId },
+    header: { token: '?', eventId: loginEventId },
     request: { 'Username': username, 'Password': password }
   };
 
