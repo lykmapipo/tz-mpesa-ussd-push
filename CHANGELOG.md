@@ -1,3 +1,13 @@
+#### 0.2.0 (2019-02-09)
+
+##### Documentation Changes
+
+*  update issue templates ([67abcf6c](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/67abcf6c8a392834e33e71346a1390b2cf5ebe74))
+
+##### New Features
+
+*  implement ussd push webhook result parser ([42320c69](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/42320c69d1f7c598909dbc4fd3f8dcca830998e3))
+
 #### 0.1.0 (2019-02-09)
 
 ##### Chores
