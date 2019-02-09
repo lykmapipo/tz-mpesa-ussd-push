@@ -6,6 +6,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const xml2js = require('xml2js');
 const request = require('request');
+const bodyParser = require('body-parser');
 const { waterfall } = require('async');
 const { areNotEmpty, compact } = require('@lykmapipo/common');
 const { getString } = require('@lykmapipo/env');
@@ -704,6 +705,66 @@ const charge = (options, done) => {
 };
 
 
+/**
+ * @function parseHttpBody
+ * @name parseHttpBody
+ * @description Middleware chain to parse ussd push result
+ * @param {Object} options valid text body parse options
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ * const { parseHttpBody } = require('@lykmapipo/tz-mpesa-ussd-push');
+ * const app = require('@lykmapipo/express-common');
+ *
+ * app.all('/v1/webhooks/tz/mpesa/ussdpush', parseHttpBody(), (request, response, next) => { ... });
+ *
+ */
+const parseHttpBody = (optns) => {
+  // merge options
+  const options = _.merge({}, {
+    type: '*/*',
+    limit: getString('BODY_PARSER_LIMIT', '2mb')
+  }, optns);
+
+  // prepare text body parse
+  const parseTextBody = bodyParser.text(options);
+
+  // prepare xml deserializer
+  const parseUssdPushBody = (request, response, next) => {
+    // parse only if text body
+    if (request.body && _.isString(request.body)) {
+      // try deserializing
+      try {
+        // keep raw body
+        const raw = _.clone(request.body);
+        request.raw = raw;
+
+        // deserialize ussd push result
+        return deserializeResult(raw, (error, result) => {
+          request.body = result ? result : raw;
+          return next();
+        });
+      }
+
+      // back-off on deserializing error
+      catch (error) {
+        return next(error);
+      }
+    }
+
+    // always continue
+    return next();
+  };
+
+  // return middleware chain
+  return [parseTextBody, parseUssdPushBody];
+};
+
+
 /* expose */
 module.exports = exports = {
   country,
@@ -721,5 +782,6 @@ module.exports = exports = {
   deserializeTransaction,
   deserializeResult,
   login,
-  charge
+  charge,
+  parseHttpBody
 };

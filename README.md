@@ -18,15 +18,23 @@ npm install --save @lykmapipo/tz-mpesa-ussd-push
 
 ## Usage
 ```js
-const { login, charge } = require('@lykmapipo/tz-mpesa-ussd-push');
+const { login, charge, parseHttpBody } = require('@lykmapipo/tz-mpesa-ussd-push');
+const app = require('@lykmapipo/express-common');
 
+// obtain sessionId
 const options = { username: '123000', password: '123@123' };
 login(options, (error, response, body) => { ... });
 // => body: { sessionId: ..., transactionId: ... }
 
+// charge customer
 const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' };
 charge(options, (error, response, body) => { ... });
 // => body: { transactionId: ..., reference: ... }
+
+// register webhook to listen for ussd result
+app.all('/v1/webhooks/tz/mpesa', parseHttpBody(), (request, response, next) => {
+    // => request.body : {header: ..., request: ...}
+  });
 ```
 
 ## Environment
