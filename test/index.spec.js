@@ -24,6 +24,13 @@ const {
 } = include(__dirname, '..');
 
 
+/* helpers */
+const readFile = path => {
+  const FIXTURES_PATH = `${__dirname}/fixtures`;
+  return readFileSync(`${FIXTURES_PATH}/${path}`, 'UTF-8');
+};
+
+
 describe('tz mpesa ussd push', () => {
   it('should be from tz', () => {
     expect(country).to.exist;
@@ -55,9 +62,8 @@ describe('tz mpesa ussd push', () => {
     expect(currency).to.be.equal('TZS');
   });
 
-  it('should serialize json to xml', (done) => {
-    const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should serialize json to xml', done => {
+    const xml = readFile('generic_request.xml');
     const payload = {
       header: { eventId: 2500, token: '96feae744a986aeee4433' },
       request: { username: '123000', password: '123@123' }
@@ -70,9 +76,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should build login request', (done) => {
-    const xmlPath = `${__dirname}/fixtures/login_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should build login request', done => {
+    const xml = readFile('login_request.xml');
     const payload = { username: '123000', password: '123@123' };
     serializeLogin(payload, (error, request) => {
       expect(error).to.not.exist;
@@ -82,9 +87,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should build transaction request', (done) => {
-    const xmlPath = `${__dirname}/fixtures/transaction_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should build transaction request', done => {
+    const xml = readFile('transaction_request.xml');
     const payload = {
       username: '338899',
       token: '744a986aeee4433fdf1b2',
@@ -104,9 +108,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize xml to json', (done) => {
-    const xmlPath = `${__dirname}/fixtures/generic_request.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize xml to json', done => {
+    const xml = readFile('generic_request.xml');
     deserialize(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
@@ -119,10 +122,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize authentication failed to error', (done) => {
-    const xmlPath =
-      `${__dirname}/fixtures/authentication_failed_response.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize authentication failed to error', done => {
+    const xml = readFile('authentication_failed_response.xml');
     deserialize(xml, (error, payload) => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Authentication Failed');
@@ -132,10 +133,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize session expired to error', (done) => {
-    const xmlPath =
-      `${__dirname}/fixtures/session_expired_response.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize session expired to error', done => {
+    const xml = readFile('session_expired_response.xml');
     deserialize(xml, (error, payload) => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Session Expired');
@@ -145,10 +144,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize login failed to error', (done) => {
-    const xmlPath =
-      `${__dirname}/fixtures/login_failed_response.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize login failed to error', done => {
+    const xml = readFile('login_failed_response.xml');
     deserialize(xml, (error, payload) => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Invalid Credentials');
@@ -158,9 +155,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize login response to json', (done) => {
-    const xmlPath = `${__dirname}/fixtures/login_response.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize login response to json', done => {
+    const xml = readFile('login_response.xml');
     deserializeLogin(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
@@ -188,9 +184,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize transaction response to json', (done) => {
-    const xmlPath = `${__dirname}/fixtures/transaction_response.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize transaction response to json', done => {
+    const xml = readFile('transaction_response.xml');
     deserializeTransaction(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
@@ -234,9 +229,8 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize transaction result to json', (done) => {
-    const xmlPath = `${__dirname}/fixtures/transaction_result.xml`;
-    const xml = readFileSync(xmlPath, 'UTF-8');
+  it('should deserialize transaction result to json', done => {
+    const xml = readFile('transaction_result.xml');
     deserializeResult(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
