@@ -3,7 +3,7 @@
 [![Build module-starter](https://travis-ci.org/lykmapipo/tz-mpesa-ussd-push.svg?branch=master)](https://travis-ci.org/lykmapipo/tz-mpesa-ussd-push)
 [![Dependencies module-starter](https://david-dm.org/lykmapipo/tz-mpesa-ussd-push.svg?style=flat-square)](https://david-dm.org/lykmapipo/tz-mpesa-ussd-push)
 
-Vodacom-Tanzania USSD Push API Client.
+Vodacom Tanzania USSD Push API Client.
 
 ## Requirements
 
