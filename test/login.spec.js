@@ -10,13 +10,22 @@ const { include } = require('@lykmapipo/include');
 const { login } = include(__dirname, '..');
 
 
+/* helpers */
+const readFile = path => {
+  const FIXTURES_PATH = `${__dirname}/fixtures`;
+  return readFileSync(`${FIXTURES_PATH}/${path}`, 'UTF-8');
+};
+
+
 describe('tz mpesa ussd push - login', () => {
   const BASE_URL = 'https://ussd.vodacom.io';
   const LOGIN_PATH = '/transactions';
-  const requestXml =
-    readFileSync(`${__dirname}/fixtures/login_request.xml`, 'UTF-8');
-  const responseXml =
-    readFileSync(`${__dirname}/fixtures/login_response.xml`, 'UTF-8');
+
+  const requestXml = readFile('login_request.xml');
+  const responseXml = readFile('login_response.xml');
+  const authFailedXml = readFile('authentication_failed_response.xml');
+  const failedLoginXml = readFile('login_failed_response.xml');
+  const sessionExpiredXml = readFile('session_expired_response.xml');
 
   before(() => {
     process.env.TZ_MPESA_USSD_PUSH_BASE_URL = BASE_URL;
@@ -25,16 +34,12 @@ describe('tz mpesa ussd push - login', () => {
 
   beforeEach(() => nock.cleanAll());
 
-  beforeEach(() => {
-    nock(BASE_URL)
-      .post(LOGIN_PATH, body => {
-        expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
-        return true;
-      })
-      .reply(200, responseXml);
-  });
+  it('should succeed with valid credentials', done => {
+    nock(BASE_URL).post(LOGIN_PATH, body => {
+      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
+      return true;
+    }).reply(200, responseXml);
 
-  it('should succeed with valid credentials', (done) => {
     const credentials = { username: '123000', password: '123@123' };
     login(credentials, (error, response, body) => {
       expect(error).to.not.exist;
@@ -59,9 +64,50 @@ describe('tz mpesa ussd push - login', () => {
     });
   });
 
-  it('should handle authentication failed');
-  it('should handle invalid credentials');
-  it('should handle session expired');
+  it('should handle authentication failed', done => {
+    nock(BASE_URL).post(LOGIN_PATH, body => {
+      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
+      return true;
+    }).reply(200, authFailedXml);
+
+    const credentials = { username: '123000', password: '123@123' };
+    login(credentials, error => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Authentication Failed');
+      expect(error.status).to.be.equal(401);
+      done();
+    });
+  });
+
+  it('should handle invalid credentials', done => {
+    nock(BASE_URL).post(LOGIN_PATH, body => {
+      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
+      return true;
+    }).reply(200, failedLoginXml);
+
+    const credentials = { username: '123000', password: '123@123' };
+    login(credentials, error => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Invalid Credentials');
+      expect(error.status).to.be.equal(401);
+      done();
+    });
+  });
+
+  it('should handle session expired', done => {
+    nock(BASE_URL).post(LOGIN_PATH, body => {
+      expect(_.kebabCase(body)).to.be.equal(_.kebabCase(requestXml));
+      return true;
+    }).reply(200, sessionExpiredXml);
+
+    const credentials = { username: '123000', password: '123@123' };
+    login(credentials, error => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Session Expired');
+      expect(error.status).to.be.equal(401);
+      done();
+    });
+  });
 
   after(() => nock.cleanAll());
   after(() => nock.enableNetConnect());
