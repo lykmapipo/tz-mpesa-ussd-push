@@ -29,7 +29,7 @@ login(options, (error, response, body) => { ... });
 // charge customer
 const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' };
 charge(options, (error, response, body) => { ... });
-// => body: { transactionId: ..., reference: ... }
+// => body: { sessionId: ..., transactionId: ..., reference: ... }
 
 // register webhook to listen for ussd result
 app.all('/v1/webhooks/tz/mpesa', parseHttpBody(), (request, response, next) => {

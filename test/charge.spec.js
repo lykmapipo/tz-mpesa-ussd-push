@@ -94,6 +94,7 @@ describe('tz mpesa ussd push - charge', () => {
         }
       });
       expect(body).to.be.eql({
+        sessionId: '744a986aeee4433fdf1b2',
         transactionId: 'e4245ff7a2154b59a2a5e778c2806712',
         reference: '580FBEBAF2F9FF43E0540208206B0EEF'
       });

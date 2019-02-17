@@ -645,7 +645,7 @@ const login = (options, done) => {
  * const { charge } = require('@lykmapipo/tz-mpesa-ussd-push');
  * const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' }
  * charge(options, (error, response) => { ... });
- * // => { reference: ..., transactionId: ....}
+ * // => { sessionId: ..., reference: ..., transactionId: ....}
  */
 const charge = (options, done) => {
   // obtain request url
@@ -659,11 +659,13 @@ const charge = (options, done) => {
     // prepare transaction
     const { sessionId } = body;
     const transaction = _.merge({}, { sessionId }, options);
-    serializeTransaction(transaction, next);
+    serializeTransaction(transaction, (error, payload) => {
+      next(error, payload, sessionId);
+    });
   };
 
   // issue request
-  const issueChargeRequest = (payload, next) => {
+  const issueChargeRequest = (payload, sessionId, next) => {
     // prepare charge request options
     const options = {
       url: requestUrl,
@@ -676,11 +678,13 @@ const charge = (options, done) => {
     };
 
     // send charge request
-    return request(options, (error, response, body) => next(error, body));
+    return request(options, (error, response, body) => {
+      next(error, body, sessionId);
+    });
   };
 
   // parse charge response
-  const parseChargeResponse = (response, next) => {
+  const parseChargeResponse = (response, sessionId, next) => {
     return deserializeTransaction(response, (error, payload) => {
       // back off on error
       if (error) { return next(error); }
@@ -688,7 +692,7 @@ const charge = (options, done) => {
       // prepare simplified body
       const transactionId = _.get(payload, 'event.transactionId');
       const reference = _.get(payload, 'response.insightReference');
-      const body = { transactionId, reference };
+      const body = { sessionId, transactionId, reference };
 
       // continue
       return next(error, payload, body);
@@ -720,7 +724,8 @@ const charge = (options, done) => {
  * const { parseHttpBody } = require('@lykmapipo/tz-mpesa-ussd-push');
  * const app = require('@lykmapipo/express-common');
  *
- * app.all('/v1/webhooks/tz/mpesa/ussdpush', parseHttpBody(), (request, response, next) => { ... });
+ * const handler = (request, response, next) => { ... };
+ * app.all('/v1/webhooks/tz/mpesa/ussdpush', parseHttpBody(), handler);
  *
  */
 const parseHttpBody = (optns) => {
