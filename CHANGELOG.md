@@ -1,3 +1,13 @@
+#### 0.3.0 (2019-02-17)
+
+##### New Features
+
+*  propagate ussd sessionId to charge response body ([25ef5a89](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/25ef5a8933be9cbd2592b136a7becf67fc8691a6))
+
+##### Bug Fixes
+
+*  reference value on specs ([c4db1f9e](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/c4db1f9ea9604d90658c95ba20eeeacbaba8d593))
+
 #### 0.2.0 (2019-02-09)
 
 ##### Documentation Changes
