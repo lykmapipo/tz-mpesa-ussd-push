@@ -274,7 +274,7 @@ describe('tz mpesa ussd push', () => {
           amount: 1500,
           date: moment('20190208 190147', 'YYYYMMDD HHmmss').toDate(),
           thirdPartyReference: 'E5FK3170',
-          insightReference: '5F8648318CD95BC3E0531600980A264E'
+          insightReference: '580FBEBAF2F9FF43E0540208206B0EEF'
         },
         response: {}
       });
