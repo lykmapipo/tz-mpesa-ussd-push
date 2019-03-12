@@ -589,8 +589,8 @@ const login = (options, done) => {
       url: loginUrl,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/xml',
-        'Accept': 'application/xml'
+        'Content-Type': 'text/xml',
+        'Accept': 'text/xml'
       },
       body: payload
     };
@@ -671,8 +671,8 @@ const charge = (options, done) => {
       url: requestUrl,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/xml',
-        'Accept': 'application/xml'
+        'Content-Type': 'text/xml',
+        'Accept': 'text/xml'
       },
       body: payload
     };
