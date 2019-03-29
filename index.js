@@ -2,6 +2,7 @@
 
 
 /* dependencies */
+const fs = require('fs');
 const _ = require('lodash');
 const moment = require('moment');
 const xml2js = require('xml2js');
@@ -581,6 +582,57 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
 
 
 /**
+ * @function readSSLOptions
+ * @name readSSLOptions
+ * @description Read available ssl files
+ * @param {Object} [options] ssl files paths
+ * @return {Object} read ssl files and passphrase
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @public
+ * @static
+ * @example
+ *
+ * const { readSSLOptions } = require('@lykmapipo/tz-mpesa-ussd-push');
+ *
+ * readSSLOptions(options, (error, response) => { ... });
+ * // => { cert: ..., key: ..., ca: ... }
+ *
+ */
+const readSSLOptions = options => {
+  // obtain ssl options
+  const {
+    sslCaFilePath,
+    sslCertFilePath,
+    sslKeyFilePath,
+    sslPassphrase
+  } = withDefaults(options);
+
+  // safe read file
+  const readFileSync = filePath => {
+    try {
+      return fs.readFileSync(filePath);
+    } catch (error) {
+      return undefined;
+    }
+  };
+
+  // prepare ssl options
+  const sslOptions = mergeObjects({
+    ca: readFileSync(sslCaFilePath),
+    cert: readFileSync(sslCertFilePath),
+    key: readFileSync(sslKeyFilePath),
+    passphrase: sslPassphrase,
+  });
+
+  // return ssl options
+  return sslOptions;
+};
+
+
+/**
  * @function login
  * @name login
  * @description Issue login request to ussd push API server
@@ -818,6 +870,7 @@ module.exports = exports = {
   deserializeLogin,
   deserializeTransaction,
   deserializeResult,
+  readSSLOptions,
   login,
   charge,
   parseHttpBody

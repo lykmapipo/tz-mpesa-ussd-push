@@ -20,7 +20,8 @@ const {
   deserialize,
   deserializeLogin,
   deserializeTransaction,
-  deserializeResult
+  deserializeResult,
+  readSSLOptions
 } = include(__dirname, '..');
 
 
@@ -280,6 +281,15 @@ describe('tz mpesa ussd push', () => {
       });
       done(error, payload);
     });
+  });
+
+  it('should be able to obtain ssl options', () => {
+    const sslOptions = readSSLOptions();
+    expect(sslOptions).to.exist;
+    expect(sslOptions.ca).to.not.exist;
+    expect(sslOptions.cert).to.not.exist;
+    expect(sslOptions.key).to.not.exist;
+    expect(sslOptions.passphrase).to.not.exist;
   });
 
   after(() => {
