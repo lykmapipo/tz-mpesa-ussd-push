@@ -146,7 +146,7 @@ const withDefaults = optns => {
     loginPath: getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH'),
     requestPath: getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH'),
     callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL'),
-    currency: currency
+    currency: getString('TZ_MPESA_USSD_PUSH_CURRENCY', currency)
   }, optns);
 
   // ensure login url
