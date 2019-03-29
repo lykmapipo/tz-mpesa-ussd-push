@@ -146,7 +146,9 @@ const withDefaults = optns => {
     loginPath: getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH'),
     requestPath: getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH'),
     callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL'),
-    currency: getString('TZ_MPESA_USSD_PUSH_CURRENCY', currency)
+    currency: getString('TZ_MPESA_USSD_PUSH_CURRENCY', currency),
+    contentType: getString('TZ_MPESA_USSD_CONTENT_TYPE', 'text/xml'),
+    accept: getString('TZ_MPESA_USSD_ACCEPT', 'text/xml')
   }, optns);
 
   // ensure login url
@@ -599,7 +601,7 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
  */
 const login = (options, done) => {
   // obtain login url
-  const { loginUrl } = withDefaults(options);
+  const { loginUrl, contentType, accept } = withDefaults(options);
 
   // prepare login xml payload
   const prepareLoginPayload = next => serializeLogin(options, next);
@@ -611,8 +613,8 @@ const login = (options, done) => {
       url: loginUrl,
       method: 'POST',
       headers: {
-        'Content-Type': 'text/xml',
-        'Accept': 'text/xml'
+        'Content-Type': contentType,
+        'Accept': accept
       },
       body: payload
     };
@@ -674,7 +676,7 @@ const login = (options, done) => {
  */
 const charge = (options, done) => {
   // obtain request url
-  const { requestUrl } = withDefaults(options);
+  const { requestUrl, contentType, accept } = withDefaults(options);
 
   // issue login request
   const issueLoginRequest = next => login(options, next);
@@ -696,8 +698,8 @@ const charge = (options, done) => {
       url: requestUrl,
       method: 'POST',
       headers: {
-        'Content-Type': 'text/xml',
-        'Accept': 'text/xml'
+        'Content-Type': contentType,
+        'Accept': accept
       },
       body: payload
     };
