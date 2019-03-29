@@ -27,6 +27,9 @@ describe('tz mpesa ussd push - parse body', () => {
   const PASSWORD = '123@123';
   const BUSINESS_NAME = 'MPESA';
   const BUSINESS_NUMBER = '338899';
+  const CA_FILE_PATH = `${__dirname}/fixtures/ssl/root.pem`;
+  const CERT_FILE_PATH = `${__dirname}/fixtures/ssl/test.crt`;
+  const KEY_FILE_PATH = `${__dirname}/fixtures/ssl/test.key`;
 
   const resultXml = readFile('transaction_result.xml');
 
@@ -38,6 +41,9 @@ describe('tz mpesa ussd push - parse body', () => {
     process.env.TZ_MPESA_USSD_PUSH_PASSWORD = PASSWORD;
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME = BUSINESS_NAME;
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER = BUSINESS_NUMBER;
+    process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH = CA_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH = CERT_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH = KEY_FILE_PATH;
   });
 
   it('should parse ussd push result', done => {
@@ -89,5 +95,8 @@ describe('tz mpesa ussd push - parse body', () => {
     delete process.env.TZ_MPESA_USSD_PUSH_PASSWORD;
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME;
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER;
+    delete process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH;
   });
 });

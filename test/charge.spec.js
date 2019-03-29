@@ -27,6 +27,10 @@ describe('tz mpesa ussd push - charge', () => {
   const BUSINESS_NAME = 'MPESA';
   const BUSINESS_NUMBER = '338899';
   const CALLBACK_URL = 'https://api.example.com/webhooks/payments';
+  const CA_FILE_PATH = `${__dirname}/fixtures/ssl/root.pem`;
+  const CERT_FILE_PATH = `${__dirname}/fixtures/ssl/test.crt`;
+  const KEY_FILE_PATH = `${__dirname}/fixtures/ssl/test.key`;
+
 
   const loginXml = readFile('login_response.xml');
   const requestXml = readFile('transaction_request.xml');
@@ -44,6 +48,9 @@ describe('tz mpesa ussd push - charge', () => {
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME = BUSINESS_NAME;
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER = BUSINESS_NUMBER;
     process.env.TZ_MPESA_USSD_PUSH_CALLBACK_URL = CALLBACK_URL;
+    process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH = CA_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH = CERT_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH = KEY_FILE_PATH;
   });
 
   beforeEach(() => nock.cleanAll());
@@ -164,5 +171,8 @@ describe('tz mpesa ussd push - charge', () => {
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME;
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER;
     delete process.env.TZ_MPESA_USSD_PUSH_CALLBACK_URL;
+    delete process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH;
   });
 });

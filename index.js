@@ -748,6 +748,13 @@ const charge = (options, done) => {
   // issue login request
   const issueLoginRequest = next => login(options, next);
 
+  // prepare ssl options
+  const prepareSSLOptions = (payload, sessionId, next) => {
+    const sslOptions = readSSLOptions(options);
+    return next(null, payload, sessionId, sslOptions);
+  };
+
+
   // prepare request xml payload
   const prepareChargeRequest = (response, body, next) => {
     // prepare transaction
@@ -759,9 +766,9 @@ const charge = (options, done) => {
   };
 
   // issue request
-  const issueChargeRequest = (payload, sessionId, next) => {
+  const issueChargeRequest = (payload, sessionId, sslOptions, next) => {
     // prepare charge request options
-    const options = {
+    const options = mergeObjects({
       url: requestUrl,
       method: 'POST',
       headers: {
@@ -769,7 +776,7 @@ const charge = (options, done) => {
         'Accept': accept
       },
       body: payload
-    };
+    }, sslOptions);
 
     // send charge request
     return request(options, (error, response, body) => {
@@ -797,6 +804,7 @@ const charge = (options, done) => {
   return waterfall([
     issueLoginRequest,
     prepareChargeRequest,
+    prepareSSLOptions,
     issueChargeRequest,
     parseChargeResponse
   ], done);
