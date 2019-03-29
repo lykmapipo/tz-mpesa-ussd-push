@@ -148,7 +148,11 @@ const withDefaults = optns => {
     callbackUrl: getString('TZ_MPESA_USSD_PUSH_CALLBACK_URL'),
     currency: getString('TZ_MPESA_USSD_PUSH_CURRENCY', currency),
     contentType: getString('TZ_MPESA_USSD_CONTENT_TYPE', 'text/xml'),
-    accept: getString('TZ_MPESA_USSD_ACCEPT', 'text/xml')
+    accept: getString('TZ_MPESA_USSD_ACCEPT', 'text/xml'),
+    sslCaFilePath: getString('TZ_MPESA_USSD_SSL_CA_FILE_PATH'),
+    sslCertFilePath: getString('TZ_MPESA_USSD_SSL_CERT_FILE_PATH'),
+    sslKeyFilePath: getString('TZ_MPESA_USSD_SSL_KEY_FILE_PATH'),
+    sslPassphrase: getString('TZ_MPESA_USSD_SSL_PASSPHRASE')
   }, optns);
 
   // ensure login url
