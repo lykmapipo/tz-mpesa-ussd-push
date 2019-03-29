@@ -666,10 +666,16 @@ const login = (options, done) => {
   // prepare login xml payload
   const prepareLoginPayload = next => serializeLogin(options, next);
 
+  // prepare ssl options
+  const prepareSSLOptions = (payload, next) => {
+    const sslOptions = readSSLOptions(options);
+    return next(null, payload, sslOptions);
+  };
+
   // issue login request
-  const issueLoginRequest = (payload, next) => {
+  const issueLoginRequest = (payload, sslOptions, next) => {
     // prepare login request options
-    const options = {
+    const options = mergeObjects({
       url: loginUrl,
       method: 'POST',
       headers: {
@@ -677,7 +683,7 @@ const login = (options, done) => {
         'Accept': accept
       },
       body: payload
-    };
+    }, sslOptions);
 
     // send login request
     return request(options, (error, response, body) => next(error, body));
@@ -702,6 +708,7 @@ const login = (options, done) => {
   // do login
   return waterfall([
     prepareLoginPayload,
+    prepareSSLOptions,
     issueLoginRequest,
     parseLoginResponse
   ], done);
