@@ -40,6 +40,9 @@ describe('tz mpesa ussd push', () => {
   const PASSWORD = '123@123';
   const BUSINESS_NAME = 'MPESA';
   const BUSINESS_NUMBER = '338899';
+  const CA_FILE_PATH = `${__dirname}/fixtures/ssl/root.pem`;
+  const CERT_FILE_PATH = `${__dirname}/fixtures/ssl/test.crt`;
+  const KEY_FILE_PATH = `${__dirname}/fixtures/ssl/test.key`;
 
   before(() => {
     process.env.TZ_MPESA_USSD_PUSH_BASE_URL = BASE_URL;
@@ -49,6 +52,9 @@ describe('tz mpesa ussd push', () => {
     process.env.TZ_MPESA_USSD_PUSH_PASSWORD = PASSWORD;
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME = BUSINESS_NAME;
     process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER = BUSINESS_NUMBER;
+    process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH = CA_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH = CERT_FILE_PATH;
+    process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH = KEY_FILE_PATH;
   });
 
   it('should be from tz', () => {
@@ -283,13 +289,26 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should be able to obtain ssl options', () => {
+  it('should be able to obtain default ssl options', () => {
     const sslOptions = readSSLOptions();
     expect(sslOptions).to.exist;
-    expect(sslOptions.ca).to.not.exist;
-    expect(sslOptions.cert).to.not.exist;
-    expect(sslOptions.key).to.not.exist;
-    expect(sslOptions.passphrase).to.not.exist;
+    expect(sslOptions.ca).to.exist;
+    expect(sslOptions.cert).to.exist;
+    expect(sslOptions.key).to.exist;
+  });
+
+  it('should be able to obtain ssl options of provided options', () => {
+    const sslOptions = readSSLOptions({
+      sslCaFilePath: CA_FILE_PATH,
+      sslCertFilePath: CERT_FILE_PATH,
+      sslKeyFilePath: KEY_FILE_PATH,
+      sslPassphrase: '1234567890'
+    });
+    expect(sslOptions).to.exist;
+    expect(sslOptions.ca).to.exist;
+    expect(sslOptions.cert).to.exist;
+    expect(sslOptions.key).to.exist;
+    expect(sslOptions.passphrase).to.be.equal('1234567890');
   });
 
   after(() => {
@@ -300,6 +319,9 @@ describe('tz mpesa ussd push', () => {
     delete process.env.TZ_MPESA_USSD_PUSH_PASSWORD;
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NAME;
     delete process.env.TZ_MPESA_USSD_PUSH_BUSINESS_NUMBER;
+    delete process.env.TZ_MPESA_USSD_SSL_CA_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_CERT_FILE_PATH;
+    delete process.env.TZ_MPESA_USSD_SSL_KEY_FILE_PATH;
   });
 
 });

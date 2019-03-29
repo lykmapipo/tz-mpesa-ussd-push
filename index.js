@@ -585,7 +585,11 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
  * @function readSSLOptions
  * @name readSSLOptions
  * @description Read available ssl files
- * @param {Object} [options] ssl files paths
+ * @param {Object} [options] valid ssl options
+ * @param {String} [options.sslCaFilePath] full path to ssl root ca file
+ * @param {String} [options.sslCertFilePath] full path to the ssl cert file
+ * @param {String} [options.sslKeyFilePath] full path to the ssl key
+ * @param {String} [options.sslPassphrase] valid passphrase
  * @return {Object} read ssl files and passphrase
  * @author lally elias <lallyelias87@mail.com>
  * @license MIT
@@ -598,7 +602,7 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
  * const { readSSLOptions } = require('@lykmapipo/tz-mpesa-ussd-push');
  *
  * readSSLOptions(options, (error, response) => { ... });
- * // => { cert: ..., key: ..., ca: ... }
+ * // => { cert: ..., key: ..., ca: ..., passphrase: ... }
  *
  */
 const readSSLOptions = options => {
