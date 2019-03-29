@@ -8,7 +8,7 @@ const xml2js = require('xml2js');
 const request = require('request');
 const bodyParser = require('body-parser');
 const { waterfall } = require('async');
-const { areNotEmpty, compact } = require('@lykmapipo/common');
+const { areNotEmpty, compact, mergeObjects } = require('@lykmapipo/common');
 const { getString } = require('@lykmapipo/env');
 const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
@@ -129,7 +129,7 @@ const currency = 'TZS';
  */
 const withDefaults = optns => {
   // merge defaults
-  let options = _.merge({}, {
+  let options = mergeObjects({
     username: getString('TZ_MPESA_USSD_PUSH_USERNAME'),
     password: getString('TZ_MPESA_USSD_PUSH_PASSWORD'),
     businessName: getString('TZ_MPESA_USSD_PUSH_BUSINESS_NAME'),
