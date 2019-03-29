@@ -123,9 +123,12 @@ const currency = 'TZS';
  * @static
  * @public
  * @example
+ *
  * const { withDefaults } = require('@lykmapipo/');
  * const optns = { username: ..., loginUrl: ..., requestUrl: ...};
- * withDefaults(optns) // => { username: ..., loginUrl: ..., requestUrl: ...};
+ * const options = withDefaults(optns)
+ * // => { username: ..., loginUrl: ..., requestUrl: ...};
+ *
  */
 const withDefaults = optns => {
   // merge defaults
@@ -171,9 +174,12 @@ const withDefaults = optns => {
  * @version 0.1.0
  * @private
  * @example
+ *
  * const { transformValue } = require('@lykmapipo/tz-mpesa-ussd-push');
  * const item = {name: 'eventId', value: 1, type: String }
- * transformValue(item); // => '1'
+ * const result = transformValue(item);
+ * // => '1'
+ *
  */
 const transformValue = item => {
   // ensure item
@@ -210,9 +216,11 @@ const transformValue = item => {
  * @public
  * @static
  * @example
+ *
  * const { serialize } = require('@lykmapipo/tz-mpesa-ussd-push');
  * serialize(payload, (error, request) => { ... });
  * // => String
+ *
  */
 const serialize = (payload, done) => {
   // prepare header params
@@ -268,9 +276,11 @@ const serialize = (payload, done) => {
  * @public
  * @static
  * @example
+ *
  * const { serializeLogin } = require('@lykmapipo/tz-mpesa-ussd-push');
  * serializeLogin(payload, (error, request) => { ... });
  * // => String
+ *
  */
 const serializeLogin = (options, done) => {
   // ensure credentials
@@ -323,9 +333,11 @@ const serializeLogin = (options, done) => {
  * @public
  * @static
  * @example
+ *
  * const { serializeTransaction } = require('@lykmapipo/tz-mpesa-ussd-push');
  * serializeTransaction(payload, (error, request) => { ... });
  * // => String
+ *
  */
 const serializeTransaction = (options, done) => {
   // ensure transaction
@@ -409,9 +421,11 @@ const serializeTransaction = (options, done) => {
  * @public
  * @static
  * @example
+ *
  * const { deserialize } = require('@lykmapipo/tz-mpesa-ussd-push');
  * deserialize(xml, (error, request) => { ... });
  * // => { header: ..., event: ..., request: ..., response: ...}
+ *
  */
 const deserialize = (xml, done) => {
   // prepare parse options
@@ -504,9 +518,11 @@ const deserialize = (xml, done) => {
  * @public
  * @static
  * @example
+ *
  * const { deserializeLogin } = require('@lykmapipo/tz-mpesa-ussd-push');
  * deserializeLogin(xml, (error, request) => { ... });
  * // => { header: ..., event: ..., request: ..., response: ...}
+ *
  */
 const deserializeLogin = (xml, done) => deserialize(xml, done);
 
@@ -526,9 +542,11 @@ const deserializeLogin = (xml, done) => deserialize(xml, done);
  * @public
  * @static
  * @example
+ *
  * const { deserializeTransaction } = require('@lykmapipo/tz-mpesa-ussd-push');
  * deserializeTransaction(xml, (error, request) => { ... });
  * // => { header: ..., request: ..., response: ...}
+ *
  */
 const deserializeTransaction = (xml, done) => deserialize(xml, done);
 
@@ -547,9 +565,11 @@ const deserializeTransaction = (xml, done) => deserialize(xml, done);
  * @public
  * @static
  * @example
+ *
  * const { deserializeResult } = require('@lykmapipo/tz-mpesa-ussd-push');
  * deserializeResult(xml, (error, request) => { ... });
  * // => { header: ..., request: ...}
+ *
  */
 const deserializeResult = (xml, done) => deserialize(xml, done);
 
@@ -570,10 +590,12 @@ const deserializeResult = (xml, done) => deserialize(xml, done);
  * @public
  * @static
  * @example
+ *
  * const { login } = require('@lykmapipo/tz-mpesa-ussd-push');
  * const credentials = { username: ..., password: ...};
  * login(credentials, (error, response) => { ... });
  * // => { sessionId: ...}
+ *
  */
 const login = (options, done) => {
   // obtain login url
@@ -642,10 +664,13 @@ const login = (options, done) => {
  * @public
  * @static
  * @example
+ *
  * const { charge } = require('@lykmapipo/tz-mpesa-ussd-push');
+ *
  * const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' }
  * charge(options, (error, response) => { ... });
  * // => { sessionId: ..., reference: ..., transactionId: ....}
+ *
  */
 const charge = (options, done) => {
   // obtain request url
@@ -721,6 +746,7 @@ const charge = (options, done) => {
  * @public
  * @static
  * @example
+ *
  * const { parseHttpBody } = require('@lykmapipo/tz-mpesa-ussd-push');
  * const app = require('@lykmapipo/express-common');
  *
