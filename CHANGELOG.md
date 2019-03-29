@@ -1,3 +1,35 @@
+#### 0.4.0 (2019-03-29)
+
+##### Chores
+
+*  force latest dependencies ([f7a6050c](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/f7a6050c93df625d981ebfa6e5c53ddb5f17629d))
+*  force latest dependencies ([58eb785e](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/58eb785ead2af3f2177eb34ae01c9ff49981a2e1))
+
+##### New Features
+
+*  add ssl options on charge request ([7b445c03](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/7b445c03b3b5d05ba773af03dd4f28419b381c6a))
+*  add ssl options on login request ([a8bc189c](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/a8bc189c3bb1d4e69088f449f4a6353be6fc61eb))
+*  add ssl options reader ([15b58d00](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/15b58d00cc6cac1601195f75fcc48822346af6b9))
+*  add ssl files path configs ([d4b21722](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/d4b21722e56b48bee22d068595906c623a5beff8))
+*  add support for http content type & accept from .env ([3440420e](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/3440420e6ffbc354759cd3debb8324d3651503ea))
+*  support currency from .env ([a75920c2](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/a75920c211b05a55ddc99fd3a594b1fcf6c6ab75))
+
+##### Other Changes
+
+*  switch content-type and accept headers to text/xml ([8033b715](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/8033b7156e8f9b92de9b7893b22abaa0285aa707))
+
+##### Refactors
+
+*  use merge objects ([168e7962](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/168e796220fb24d0f6d87fa29870a04edd53bcb4))
+
+##### Code Style Changes
+
+*  improve jsdoc identations ([1a7efbd4](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/1a7efbd4bd0871d886f6d818ec7c03c641bc03de))
+
+##### Tests
+
+*  improve readSSL optins and its jsdoc ([8430b6a4](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/8430b6a4622db14af40f0a68258fd5d7598eaa72))
+
 #### 0.3.0 (2019-02-17)
 
 ##### New Features
