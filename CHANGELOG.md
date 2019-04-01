@@ -1,3 +1,9 @@
+#### 0.4.1 (2019-04-01)
+
+##### Chores
+
+*  force latestd pendencies ([0bcbd680](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/0bcbd6804a68b30b97b9eb2d5daba4d677e34229))
+
 #### 0.4.0 (2019-03-29)
 
 ##### Chores
