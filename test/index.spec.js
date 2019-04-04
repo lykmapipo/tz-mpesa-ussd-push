@@ -121,7 +121,7 @@ describe('tz mpesa ussd push', () => {
   it('should build transaction request', done => {
     const xml = readFile('transaction_request.xml');
     const payload = {
-      username: '338899',
+      username: '123000',
       sessionId: '744a986aeee4433fdf1b2',
       msisdn: '255754001001',
       businessName: 'MPESA',
@@ -248,7 +248,7 @@ describe('tz mpesa ussd push', () => {
           command: 'CustomerPaybill',
           callBackChannel: 1,
           callbackDestination: 'https://api.example.com/webhooks/payments',
-          username: 338899
+          username: 123000
         },
         response: {
           thirdPartyReference: 'A5FK3170',

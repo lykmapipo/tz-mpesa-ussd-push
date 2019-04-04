@@ -92,7 +92,7 @@ describe('tz mpesa ussd push - charge', () => {
           command: 'CustomerPaybill',
           callBackChannel: 1,
           callbackDestination: 'https://api.example.com/webhooks/payments',
-          username: 338899
+          username: 123000
         },
         response: {
           thirdPartyReference: 'A5FK3170',

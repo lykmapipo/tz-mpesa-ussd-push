@@ -407,7 +407,7 @@ const serializeTransaction = (options, done) => {
       'Command': requestCommand,
       'CallBackChannel': 1,
       'CallbackDestination': callbackUrl,
-      'Username': businessNumber
+      'Username': username || businessNumber
     }
   };
 
