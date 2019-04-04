@@ -1,3 +1,25 @@
+#### 0.5.0 (2019-04-04)
+
+##### Chores
+
+*  force latest dependencies ([05b81c3a](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/05b81c3af67a4488e1c3299dc5327cacd82ecf3d))
+
+##### Documentation Changes
+
+*  update build & dependency status ([28a65dab](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/28a65dabc15440b2292d73a70f6f135f960b1441))
+
+##### New Features
+
+*  add web hook path constant ([37b8e5d7](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/37b8e5d7b3e34784e7e5247207cac7c584459fbb))
+
+##### Bug Fixes
+
+*  honor username on transaction request ([0d1d5e0b](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/0d1d5e0bb557f59f694596ac239f51921f23c6d4))
+
+##### Refactors
+
+*  change request command to CustomerPaybill ([93e64d62](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/93e64d62b1a42c0cfbce6535d1dc87dde449479a))
+
 #### 0.4.1 (2019-04-01)
 
 ##### Chores
