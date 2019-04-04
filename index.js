@@ -111,6 +111,7 @@ const mode = 'USSD Push';
  */
 const currency = 'TZS';
 
+
 /**
  * @function withDefaults
  * @name withDefaults
