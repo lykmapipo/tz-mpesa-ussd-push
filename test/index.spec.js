@@ -8,6 +8,7 @@ const moment = require('moment');
 const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
 const {
+  WEBHOOK_PATH,
   country,
   provider,
   method,
@@ -85,6 +86,11 @@ describe('tz mpesa ussd push', () => {
   it('should use tzs currency', () => {
     expect(currency).to.exist;
     expect(currency).to.be.equal('TZS');
+  });
+
+  it('should expose webhook path', () => {
+    expect(WEBHOOK_PATH).to.exist;
+    expect(WEBHOOK_PATH).to.be.equal('/webhooks/tz/mpesa/ussd-push');
   });
 
   it('should serialize json to xml', done => {
@@ -239,7 +245,7 @@ describe('tz mpesa ussd push', () => {
           date: moment('2019020804', 'YYYYMMDDHH').toDate(),
           amount: 1500,
           thirdPartyReference: 'A5FK3170',
-          command: 'customerLipa',
+          command: 'CustomerPaybill',
           callBackChannel: 1,
           callbackDestination: 'https://api.example.com/webhooks/payments',
           username: 338899

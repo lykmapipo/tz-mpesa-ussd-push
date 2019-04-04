@@ -89,7 +89,7 @@ describe('tz mpesa ussd push - charge', () => {
           date: moment('2019020804', 'YYYYMMDDHH').toDate(),
           amount: 1500,
           thirdPartyReference: 'A5FK3170',
-          command: 'customerLipa',
+          command: 'CustomerPaybill',
           callBackChannel: 1,
           callbackDestination: 'https://api.example.com/webhooks/payments',
           username: 338899

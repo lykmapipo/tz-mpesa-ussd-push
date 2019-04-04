@@ -51,7 +51,7 @@
           <dataItem>
             <name>Command</name>
             <type>String</type>
-            <value>customerLipa</value>
+            <value>CustomerPaybill</value>
           </dataItem>
           <dataItem>
             <name>CallBackChannel</name>

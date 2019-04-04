@@ -15,6 +15,7 @@ const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
 
 /* constants */
+const WEBHOOK_PATH = '/webhooks/tz/mpesa/ussd-push';
 const AUTH_FAILED = 'Authentication Failed';
 const SESSION_EXPIRED = 'Session Expired';
 const INVALID_CREDENTIALS = 'Invalid Credentials';
@@ -876,6 +877,7 @@ const parseHttpBody = (optns) => {
 
 /* expose */
 module.exports = exports = {
+  WEBHOOK_PATH,
   country,
   provider,
   method,
