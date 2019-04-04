@@ -1,3 +1,10 @@
+#### 0.5.1 (2019-04-04)
+
+##### Documentation Changes
+
+*  add contribution guideline ([e27c462b](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/e27c462bc7e93ac2a670716db80cb166e2994aac))
+*  add code of conduct ([4cbca6cb](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/4cbca6cbebdfc0de358ec081e075bbf909549af1))
+
 #### 0.5.0 (2019-04-04)
 
 ##### Chores
