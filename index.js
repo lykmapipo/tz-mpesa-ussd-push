@@ -142,7 +142,7 @@ const withDefaults = optns => {
     requestEventId: getString('TZ_MPESA_USSD_PUSH_REQUEST_EVENT_ID',
       '40009'),
     requestCommand: getString('TZ_MPESA_USSD_PUSH_REQUEST_COMMAND',
-      'customerLipa'),
+      'CustomerPaybill'),
     baseUrl: getString('TZ_MPESA_USSD_PUSH_BASE_URL'),
     loginPath: getString('TZ_MPESA_USSD_PUSH_LOGIN_PATH'),
     requestPath: getString('TZ_MPESA_USSD_PUSH_REQUEST_PATH'),
