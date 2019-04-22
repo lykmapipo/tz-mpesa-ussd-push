@@ -114,7 +114,8 @@ describe('tz mpesa ussd push', () => {
   });
 
   it('should merge `.env` options with given options', () => {
-    const options = withDefaults({ name: 'MPES', number: 3333 });
+    const options =
+      withDefaults({ name: 'MPES', number: 3333, command: 'Lipa' });
     expect(options).to.exist;
     expect(options).to.have.keys(
       'accept', 'baseUrl', 'businessName',
@@ -126,6 +127,7 @@ describe('tz mpesa ussd push', () => {
     );
     expect(options.businessName).to.equal('MPES');
     expect(options.businessNumber).to.equal(3333);
+    expect(options.requestCommand).to.equal('Lipa');
   });
 
   it('should serialize json to xml', done => {

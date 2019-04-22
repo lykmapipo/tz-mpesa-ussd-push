@@ -177,6 +177,9 @@ const withDefaults = optns => {
   // ensure business number
   options.businessNumber = (options.number || options.businessNumber);
 
+  // ensure request command
+  options.requestCommand = (options.command || options.requestCommand);
+
   // ensure login url
   options.loginUrl =
     (options.loginUrl || `${options.baseUrl}${options.loginPath}`);
@@ -186,7 +189,7 @@ const withDefaults = optns => {
     (options.requestUrl || `${options.baseUrl}${options.requestPath}`);
 
   // compact options
-  options = mergeObjects(_.omit(options, 'name', 'number'));
+  options = mergeObjects(_.omit(options, 'name', 'number', 'command'));
 
   // return options
   return options;
