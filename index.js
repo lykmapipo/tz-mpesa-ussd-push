@@ -9,7 +9,7 @@ const xml2js = require('xml2js');
 const request = require('request');
 const bodyParser = require('body-parser');
 const { waterfall } = require('async');
-const { areNotEmpty, compact, mergeObjects } = require('@lykmapipo/common');
+const { areNotEmpty, mergeObjects } = require('@lykmapipo/common');
 const { getString } = require('@lykmapipo/env');
 const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
@@ -171,6 +171,12 @@ const withDefaults = optns => {
     sslPassphrase: getString('TZ_MPESA_USSD_SSL_PASSPHRASE')
   }, optns);
 
+  // ensure business name
+  options.businessName = (options.name || options.businessName);
+
+  // ensure business number
+  options.businessNumber = (options.number || options.businessNumber);
+
   // ensure login url
   options.loginUrl =
     (options.loginUrl || `${options.baseUrl}${options.loginPath}`);
@@ -179,8 +185,10 @@ const withDefaults = optns => {
   options.requestUrl =
     (options.requestUrl || `${options.baseUrl}${options.requestPath}`);
 
-  // compact and return
-  options = compact(options);
+  // compact options
+  options = mergeObjects(_.omit(options, 'name', 'number'));
+
+  // return options
   return options;
 };
 

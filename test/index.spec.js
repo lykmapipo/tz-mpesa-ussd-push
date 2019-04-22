@@ -16,6 +16,7 @@ const {
   mode,
   currency,
   name,
+  withDefaults,
   serialize,
   serializeLogin,
   serializeTransaction,
@@ -97,6 +98,34 @@ describe('tz mpesa ussd push', () => {
   it('should expose webhook path', () => {
     expect(WEBHOOK_PATH).to.exist;
     expect(WEBHOOK_PATH).to.be.equal('/webhooks/tz/mpesa/ussd-push');
+  });
+
+  it('should parse `.env` for default options', () => {
+    const options = withDefaults();
+    expect(options).to.exist;
+    expect(options).to.have.keys(
+      'accept', 'baseUrl', 'businessName',
+      'businessNumber', 'contentType', 'currency',
+      'loginEventId', 'loginPath', 'loginUrl',
+      'password', 'requestCommand', 'requestEventId',
+      'requestPath', 'requestUrl', 'sslCaFilePath',
+      'sslCertFilePath', 'sslKeyFilePath', 'username'
+    );
+  });
+
+  it('should merge `.env` options with given options', () => {
+    const options = withDefaults({ name: 'MPES', number: 3333 });
+    expect(options).to.exist;
+    expect(options).to.have.keys(
+      'accept', 'baseUrl', 'businessName',
+      'businessNumber', 'contentType', 'currency',
+      'loginEventId', 'loginPath', 'loginUrl',
+      'password', 'requestCommand', 'requestEventId',
+      'requestPath', 'requestUrl', 'sslCaFilePath',
+      'sslCertFilePath', 'sslKeyFilePath', 'username'
+    );
+    expect(options.businessName).to.equal('MPES');
+    expect(options.businessNumber).to.equal(3333);
   });
 
   it('should serialize json to xml', done => {
