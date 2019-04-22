@@ -16,7 +16,10 @@ const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
 /* constants */
 const WEBHOOK_PATH = '/webhooks/tz/mpesa/ussd-push';
+const ERROR_TYPE_AUTHENTICATION = 'Authentication';
 const ERROR_TYPE_FAULT = 'Fault';
+const ERROR_TYPE_SESSION = 'Session';
+const ERROR_TYPE_VALIDATION = 'Validation';
 const AUTH_FAILED = 'Authentication Failed';
 const SESSION_EXPIRED = 'Session Expired';
 const INVALID_CREDENTIALS = 'Invalid Credentials';
@@ -369,6 +372,9 @@ const serializeLogin = (options, done) => {
   if (_.isEmpty(loginUrl)) {
     let error = new Error('Missing API Login URL');
     error.status = 400;
+    error.code = 400;
+    error.type = ERROR_TYPE_VALIDATION;
+    error.description = 'Missing API Login URL';
     error.data = credentials;
     return done(error);
   }
@@ -381,6 +387,9 @@ const serializeLogin = (options, done) => {
   if (!isValid) {
     let error = new Error('Invalid Login Credentials');
     error.status = 400;
+    error.code = 400;
+    error.type = ERROR_TYPE_VALIDATION;
+    error.description = 'Invalid Login Credentials';
     error.data = credentials;
     return done(error);
   }
@@ -426,6 +435,9 @@ const serializeTransaction = (options, done) => {
   if (_.isEmpty(requestUrl)) {
     let error = new Error('Missing API Request URL');
     error.status = 400;
+    error.code = 400;
+    error.type = ERROR_TYPE_VALIDATION;
+    error.description = 'Missing API Request URL';
     error.data = transaction;
     return done(error);
   }
@@ -458,6 +470,9 @@ const serializeTransaction = (options, done) => {
   if (!isValid) {
     let error = new Error('Invalid Transaction Details');
     error.status = 400;
+    error.code = 400;
+    error.type = ERROR_TYPE_VALIDATION;
+    error.description = 'Invalid Transaction Details';
     error.data = transaction;
     return done(error);
   }
@@ -577,6 +592,9 @@ const deserialize = (xml, done) => {
     if (authFailed) {
       let error = new Error(AUTH_FAILED);
       error.status = 401;
+      error.code = event.code;
+      error.type = ERROR_TYPE_AUTHENTICATION;
+      error.description = (event.detail || AUTH_FAILED);
       return done(error);
     }
 
@@ -585,6 +603,9 @@ const deserialize = (xml, done) => {
     if (sessionExpired) {
       let error = new Error(SESSION_EXPIRED);
       error.status = 401;
+      error.code = event.code;
+      error.type = ERROR_TYPE_SESSION;
+      error.description = (event.detail || SESSION_EXPIRED);
       return done(error);
     }
 
@@ -594,6 +615,9 @@ const deserialize = (xml, done) => {
     if (invalidCredentials) {
       let error = new Error(INVALID_CREDENTIALS);
       error.status = 401;
+      error.code = event.code;
+      error.type = ERROR_TYPE_AUTHENTICATION;
+      error.description = INVALID_CREDENTIALS;
       return done(error);
     }
 
@@ -953,6 +977,7 @@ const parseHttpBody = (optns) => {
 
       // back-off on deserializing error
       catch (error) {
+        // TODO swallow errors and add them to response results
         return next(error);
       }
     }
@@ -967,7 +992,7 @@ const parseHttpBody = (optns) => {
 
 
 /* expose */
-module.exports = exports = {
+module.exports = exports = { // TOD reduced exposed
   WEBHOOK_PATH,
   country,
   provider,

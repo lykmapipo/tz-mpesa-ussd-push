@@ -218,6 +218,9 @@ describe('tz mpesa ussd push', () => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Authentication Failed');
       expect(error.status).to.be.equal(401);
+      expect(error.code).to.be.equal(4);
+      expect(error.type).to.be.equal('Authentication');
+      expect(error.description).to.be.equal('Authentication Failed');
       expect(payload).to.not.exist;
       done(null, payload);
     });
@@ -229,6 +232,9 @@ describe('tz mpesa ussd push', () => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Session Expired');
       expect(error.status).to.be.equal(401);
+      expect(error.code).to.be.equal(4);
+      expect(error.type).to.be.equal('Session');
+      expect(error.description).to.be.equal('Session Expired');
       expect(payload).to.not.exist;
       done(null, payload);
     });
@@ -240,6 +246,9 @@ describe('tz mpesa ussd push', () => {
       expect(error).to.exist;
       expect(error.message).to.be.equal('Invalid Credentials');
       expect(error.status).to.be.equal(401);
+      expect(error.code).to.be.equal(3);
+      expect(error.type).to.be.equal('Authentication');
+      expect(error.description).to.be.equal('Invalid Credentials');
       expect(payload).to.not.exist;
       done(null, payload);
     });
