@@ -15,8 +15,9 @@ const {
   channel,
   mode,
   currency,
-  name,
+  gateway,
   withDefaults,
+  info,
   serialize,
   serializeLogin,
   serializeTransaction,
@@ -90,9 +91,9 @@ describe('tz mpesa ussd push', () => {
     expect(currency).to.be.equal('TZS');
   });
 
-  it('should expose machine readable name', () => {
-    expect(name).to.exist;
-    expect(name).to.be.equal('tz-mpesa-ussd-push');
+  it('should expose machine readable gateway', () => {
+    expect(gateway).to.exist;
+    expect(gateway).to.be.equal('tz-mpesa-ussd-push');
   });
 
   it('should expose webhook path', () => {
@@ -128,6 +129,27 @@ describe('tz mpesa ussd push', () => {
     expect(options.businessName).to.equal('MPES');
     expect(options.businessNumber).to.equal(3333);
     expect(options.requestCommand).to.equal('Lipa');
+  });
+
+  it('should provide normalized client information', () => {
+    const details = info();
+    expect(details).to.exist;
+    expect(details).to.have.keys(
+      'number', 'name', 'username', 'password',
+      'country', 'provider', 'method', 'channel',
+      'mode', 'currency', 'gateway'
+    );
+  });
+
+  it('should provide merged normalized client information', () => {
+    const details = info({ name: 'MPES' });
+    expect(details).to.exist;
+    expect(details).to.have.keys(
+      'number', 'name', 'username', 'password',
+      'country', 'provider', 'method', 'channel',
+      'mode', 'currency', 'gateway'
+    );
+    expect(details.name).to.equal('MPES');
   });
 
   it('should serialize json to xml', done => {

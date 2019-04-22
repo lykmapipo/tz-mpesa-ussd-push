@@ -114,8 +114,8 @@ const currency = 'TZS';
 
 
 /**
- * @name name
- * @description Machine readable name of a payment gateway.
+ * @name gateway
+ * @description Machine readable name of a client as gateway.
  * @author lally elias <lallyelias87@mail.com>
  * @license MIT
  * @since 0.6.0
@@ -123,13 +123,13 @@ const currency = 'TZS';
  * @public
  * @static
  */
-const name = _.toLower(`${country}-${channel}-${_.kebabCase(mode)}`);
+const gateway = _.toLower(`${country}-${channel}-${_.kebabCase(mode)}`);
 
 
 /**
  * @function withDefaults
  * @name withDefaults
- * @description merge provided options with defaults.
+ * @description Merge provided options with defaults.
  * @param {Object} [optns] provided options
  * @return {Object} merged options
  * @author lally elias <lallyelias87@mail.com>
@@ -193,6 +193,44 @@ const withDefaults = optns => {
 
   // return options
   return options;
+};
+
+/**
+ * @function info
+ * @name info
+ * @description obtain normalized client information
+ * @param {Object} [optns] options overrides
+ * @return {Object} client information
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const { info } = require('@lykmapipo/');
+ * const options = info(optns)
+ * // => { username: ..., password: ..., number: ..., name: ...};
+ *
+ */
+const info = optns => {
+  // merge overrides with defauls
+  const {
+    businessNumber: number,
+    businessName: name,
+    username,
+    password
+  } = withDefaults(optns);
+
+  // pack normalized information
+  const business = { number, name, username, password };
+  const meta =
+    ({ country, provider, method, channel, mode, currency, gateway });
+  const details = mergeObjects(meta, business);
+
+  // return normalized client information
+  return details;
 };
 
 /**
@@ -908,7 +946,7 @@ module.exports = exports = {
   channel,
   mode,
   currency,
-  name,
+  gateway,
   withDefaults,
   serialize,
   serializeLogin,
@@ -918,6 +956,7 @@ module.exports = exports = {
   deserializeTransaction,
   deserializeResult,
   readSSLOptions,
+  info,
   login,
   charge,
   parseHttpBody
