@@ -245,7 +245,7 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize client fault to error', done => {
+  it('should deserialize gateway client fault to error', done => {
     const xml = readFile('client_fault_response.xml');
     deserialize(xml, (error, payload) => {
       expect(error).to.exist;
@@ -255,6 +255,21 @@ describe('tz mpesa ussd push', () => {
       expect(error.type).to.be.equal('Fault');
       expect(error.description)
         .to.be.equal('Cannot find dispatch method for {}');
+      expect(payload).to.not.exist;
+      done(null, payload);
+    });
+  });
+
+  it('should deserialize gateway server fault to error', done => {
+    const xml = readFile('server_fault_response.xml');
+    deserialize(xml, (error, payload) => {
+      expect(error).to.exist;
+      expect(error.message).to.be.equal('Gateway Server Fault');
+      expect(error.status).to.be.equal(500);
+      expect(error.code).to.be.equal('S:Server');
+      expect(error.type).to.be.equal('Fault');
+      expect(error.description)
+        .to.be.equal('java.lang.NullPointerException');
       expect(payload).to.not.exist;
       done(null, payload);
     });
