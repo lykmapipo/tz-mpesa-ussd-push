@@ -114,6 +114,19 @@ const currency = 'TZS';
 
 
 /**
+ * @name name
+ * @description Machine readable name of a payment gateway.
+ * @author lally elias <lallyelias87@mail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @public
+ * @static
+ */
+const name = _.toLower(`${country}-${channel}-${_.kebabCase(mode)}`);
+
+
+/**
  * @function withDefaults
  * @name withDefaults
  * @description merge provided options with defaults.
@@ -884,6 +897,7 @@ module.exports = exports = {
   channel,
   mode,
   currency,
+  name,
   withDefaults,
   serialize,
   serializeLogin,

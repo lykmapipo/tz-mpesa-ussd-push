@@ -15,6 +15,7 @@ const {
   channel,
   mode,
   currency,
+  name,
   serialize,
   serializeLogin,
   serializeTransaction,
@@ -86,6 +87,11 @@ describe('tz mpesa ussd push', () => {
   it('should use tzs currency', () => {
     expect(currency).to.exist;
     expect(currency).to.be.equal('TZS');
+  });
+
+  it('should expose machine readable name', () => {
+    expect(name).to.exist;
+    expect(name).to.be.equal('tz-mpesa-ussd-push');
   });
 
   it('should expose webhook path', () => {
