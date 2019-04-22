@@ -135,9 +135,9 @@ describe('tz mpesa ussd push', () => {
     const details = info();
     expect(details).to.exist;
     expect(details).to.have.keys(
-      'number', 'name', 'username', 'password',
-      'country', 'provider', 'method', 'channel',
-      'mode', 'currency', 'gateway'
+      'number', 'name', 'command', 'username',
+      'password', 'country', 'provider', 'method',
+      'channel', 'mode', 'currency', 'gateway'
     );
   });
 
@@ -145,9 +145,9 @@ describe('tz mpesa ussd push', () => {
     const details = info({ name: 'MPES' });
     expect(details).to.exist;
     expect(details).to.have.keys(
-      'number', 'name', 'username', 'password',
-      'country', 'provider', 'method', 'channel',
-      'mode', 'currency', 'gateway'
+      'number', 'name', 'command', 'username',
+      'password', 'country', 'provider', 'method',
+      'channel', 'mode', 'currency', 'gateway'
     );
     expect(details.name).to.equal('MPES');
   });

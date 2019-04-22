@@ -219,12 +219,13 @@ const info = optns => {
   const {
     businessNumber: number,
     businessName: name,
+    requestCommand: command,
     username,
     password
   } = withDefaults(optns);
 
   // pack normalized information
-  const business = { number, name, username, password };
+  const business = { number, name, command, username, password };
   const meta =
     ({ country, provider, method, channel, mode, currency, gateway });
   const details = mergeObjects(meta, business);
