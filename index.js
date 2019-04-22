@@ -16,14 +16,20 @@ const { parse: xmlToJson, build: jsonToXml } = require('paywell-xml');
 
 /* constants */
 const WEBHOOK_PATH = '/webhooks/tz/mpesa/ussd-push';
+const ERROR_TYPE_FAULT = 'Fault';
 const AUTH_FAILED = 'Authentication Failed';
 const SESSION_EXPIRED = 'Session Expired';
 const INVALID_CREDENTIALS = 'Invalid Credentials';
+const FAULT_CLIENT_CODE = 'S:Client';
+const FAULT_SERVER_CODE = 'S:Server';
+const FAULT_CLIENT_MESSAGE = 'Gateway Client Fault';
+const FAULT_SERVER_MESSAGE = 'Gateway Server Fault';
 const RESULT_DATE_FORMAT = 'YYYYMMDD HHmmss';
 const REQUEST_DATE_FORMAT = 'YYYYMMDDHH';
 const REQUEST_HEADER_TAG = 'envelope.header';
 const REQUEST_DATA_TAG = 'envelope.body.getGenericResult.request.dataItem';
 const RESPONSE_HEADER_TAG = 'envelope.header';
+const RESPONSE_FAULT_TAG = 'envelope.body.fault';
 const RESPONSE_TAG = 'envelope.body.getGenericResultResponse.soapapiResult';
 const RESPONSE_EVENT_DATA_TAG = `${RESPONSE_TAG}.eventInfo`;
 const RESPONSE_REQUEST_DATA_TAG = `${RESPONSE_TAG}.request.dataItem`;
@@ -511,6 +517,27 @@ const deserialize = (xml, done) => {
     // back-off on error
     if (error) { return done(error); }
 
+    // obtain fault response
+    const fault = _.get(json, RESPONSE_FAULT_TAG, {});
+    const { faultcode, faultstring } = fault;
+
+    // handle fault response
+    const hasClientFault = (fault && (faultcode || faultstring));
+    if (hasClientFault) {
+      // obtain fault message
+      const message = (faultcode === FAULT_SERVER_CODE ?
+        FAULT_SERVER_MESSAGE :
+        FAULT_CLIENT_MESSAGE
+      );
+      // build fault error
+      let error = new Error(message);
+      error.status = (faultcode === FAULT_CLIENT_CODE ? 400 : 500);
+      error.code = faultcode;
+      error.type = ERROR_TYPE_FAULT;
+      error.description = faultstring;
+      return done(error);
+    }
+
     // obtain request header and normalize
     const header = (
       _.get(json, REQUEST_HEADER_TAG) ||
@@ -801,7 +828,8 @@ const login = (options, done) => {
  *
  * const { charge } = require('@lykmapipo/tz-mpesa-ussd-push');
  *
- * const options = { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' }
+ * const options =
+ *   { msisdn: '255754001001', amount: 1500, reference: 'A5FK3170' }
  * charge(options, (error, response) => { ... });
  * // => { sessionId: ..., reference: ..., transactionId: ....}
  *
