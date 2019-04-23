@@ -20,6 +20,7 @@ const ERROR_TYPE_AUTHENTICATION = 'Authentication';
 const ERROR_TYPE_FAULT = 'Fault';
 const ERROR_TYPE_SESSION = 'Session';
 const ERROR_TYPE_VALIDATION = 'Validation';
+const STATUS_PROCESSED = 'Processed';
 const AUTH_FAILED = 'Authentication Failed';
 const SESSION_EXPIRED = 'Session Expired';
 const INVALID_CREDENTIALS = 'Invalid Credentials';
@@ -621,8 +622,50 @@ const deserialize = (xml, done) => {
       return done(error);
     }
 
+    // prepare normalize response properties
+    const data = mergeObjects(header, event, response, request);
+    const code = (data.resultCode || data.code);
+    const type = (data.resultType || data.description);
+    const description = (data.resultDesc || data.detail);
+    const receipt = (data.transId || data.conversationId);
+    const transaction = (data.transactionId);
+    const session = (data.sessionId);
+    const token = (data.insightReference);
+    const reference = (data.thirdPartyReference);
+    const status = _.toLower(data.transactionStatus || STATUS_PROCESSED);
+    const username = (data.username);
+    const password = (data.password);
+    const msisdn = (data.customerMsisdn);
+    const amount = (data.amount);
+    const currency = (data.currency);
+    const date = (data.date);
+    const command = (data.command);
+    const callback = (data.callbackDestination);
+    const name = (data.businessName);
+    const number = (data.businessNumber);
+
+    // re-format response
+    const reply = {
+      msisdn,
+      amount,
+      currency,
+      date,
+      command,
+      callback,
+      session,
+      transaction,
+      token,
+      reference,
+      receipt,
+      status,
+      result: { status, code, type, description },
+      json: { header, event, request, response },
+      xml: xml,
+      ...info({ name, number, username, password })
+    };
+
     // return request
-    return done(null, { header, event, request, response });
+    return done(null, reply);
   });
 };
 

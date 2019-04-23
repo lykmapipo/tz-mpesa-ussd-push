@@ -284,12 +284,31 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it('should deserialize login response to json', done => {
+  it.only('should deserialize login response to json', done => {
     const xml = readFile('login_response.xml');
     deserializeLogin(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      const { header, event, request, response } = payload;
+      console.log('login', payload);
+      const {
+        transaction,
+        session,
+        status,
+        username,
+        password,
+        result,
+        json,
+        xml
+      } = payload;
+      const { header, event, request, response } = json;
+      expect(transaction).to.exist;
+      expect(transaction).to.be.equal('504830a4f038cb842960cc');
+      expect(session).to.exist;
+      expect(session).to.be.equal('744a986aeee4433fdf1b2');
+      expect(status).to.exist;
+      expect(status).to.be.equal('processed');
+      expect(username).to.exist;
+      expect(password).to.exist;
       expect(header).to.exist;
       expect(header).to.be.an('object');
       expect(event).to.exist;
@@ -298,7 +317,13 @@ describe('tz mpesa ussd push', () => {
       expect(request).to.be.an('object');
       expect(response).to.exist;
       expect(response).to.be.an('object');
-      expect(payload).to.be.eql({
+      expect(result).to.be.eql({
+        status: 'processed',
+        code: 3,
+        type: 'Processed',
+        description: 'Processed'
+      });
+      expect(json).to.be.eql({
         header: { eventId: 2500 },
         event: {
           code: 3,
@@ -309,16 +334,26 @@ describe('tz mpesa ussd push', () => {
         request: { username: 123000, password: '123@123' },
         response: { sessionId: '744a986aeee4433fdf1b2' }
       });
+      expect(xml).to.exist;
       done(error, payload);
     });
   });
 
-  it('should deserialize transaction response to json', done => {
+  it.only('should deserialize transaction response to json', done => {
     const xml = readFile('transaction_response.xml');
     deserializeTransaction(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      const { header, event, request, response } = payload;
+      console.log('charge', payload);
+      const { transaction, reference, token, json, xml } = payload;
+      const { header, event, request, response } = json;
+      expect(transaction).to.exist;
+      expect(transaction).to.be.equal(
+        'e4245ff7a2154b59a2a5e778c2806712');
+      expect(reference).to.exist;
+      expect(reference).to.be.equal('A5FK3170');
+      expect(token).to.exist;
+      expect(token).to.be.equal('580FBEBAF2F9FF43E0540208206B0EEF');
       expect(header).to.exist;
       expect(header).to.be.an('object');
       expect(event).to.exist;
@@ -327,7 +362,7 @@ describe('tz mpesa ussd push', () => {
       expect(request).to.be.an('object');
       expect(response).to.exist;
       expect(response).to.be.an('object');
-      expect(payload).to.be.eql({
+      expect(json).to.be.eql({
         header: { eventId: 40009 },
         event: {
           code: 3,
@@ -354,32 +389,39 @@ describe('tz mpesa ussd push', () => {
           responseCode: 0
         }
       });
+      expect(xml).to.exist;
       done(error, payload);
     });
   });
 
-  it('should deserialize transaction result to json', done => {
+  it.only('should deserialize transaction result to json', done => {
     const xml = readFile('transaction_result.xml');
     deserializeResult(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      const { header, request } = payload;
+      console.log('result', payload);
+      const { receipt, status, json } = payload;
+      const { header, request } = json;
+      expect(receipt).to.exist;
+      expect(receipt).to.be.equal('Z9E6027IJ50M');
+      expect(status).to.exist;
+      expect(status).to.be.equal('success');
       expect(header).to.exist;
       expect(header).to.be.an('object');
       expect(header).to.be.eql({ eventId: 1 });
       expect(request).to.exist;
       expect(request).to.be.an('object');
-      expect(payload).to.be.eql({
+      expect(json).to.be.eql({
         header: { eventId: 1 },
         event: {},
         request: {
-          resultType: undefined,
-          resultCode: undefined,
-          resultDesc: undefined,
-          transactionStatus: 'USSDCallbackCancel',
-          originatorConversationId: undefined,
-          conversationId: undefined,
-          transId: undefined,
+          resultType: 'Completed',
+          resultCode: 0,
+          resultDesc: 'Success',
+          transactionStatus: 'Success',
+          originatorConversationId: 'N/A',
+          conversationId: 'Z9E6027IJ50M',
+          transId: 'Z9E6027IJ50M',
           businessNumber: 888888,
           currency: 'TZS',
           amount: 1500,

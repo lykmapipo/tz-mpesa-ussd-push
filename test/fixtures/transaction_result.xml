@@ -8,37 +8,37 @@
       <Request>
         <dataItem>
           <name>ResultType</name>
-          <value>null</value>
+          <value>Completed</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>ResultCode</name>
-          <value>null</value>
+          <value>0</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>ResultDesc</name>
-          <value>null</value>
+          <value>Success</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>TransactionStatus</name>
-          <value>USSDCallbackCancel</value>
+          <value>Success</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>OriginatorConversationID</name>
-          <value>null</value>
+          <value>N/A</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>ConversationID</name>
-          <value>null</value>
+          <value>Z9E6027IJ50M</value>
           <type>String</type>
         </dataItem>
         <dataItem>
           <name>TransID</name>
-          <value>null</value>
+          <value>Z9E6027IJ50M</value>
           <type>String</type>
         </dataItem>
         <dataItem>

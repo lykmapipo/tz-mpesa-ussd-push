@@ -4,7 +4,7 @@
   "camelcase": true,
   "curly": true,
   "eqeqeq": true,
-  "esnext": true,
+  "esversion": 9,
   "immed": true,
   "latedef": true,
   "newcap": true,
