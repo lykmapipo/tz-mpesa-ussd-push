@@ -643,6 +643,7 @@ const deserialize = (xml, done) => {
     const callback = (data.callbackDestination);
     const name = (data.businessName);
     const number = (data.businessNumber);
+    const isSuccessful = (status === 'success');
 
     // re-format response
     const reply = {
@@ -658,6 +659,7 @@ const deserialize = (xml, done) => {
       reference,
       receipt,
       status,
+      isSuccessful,
       result: { status, code, type, description },
       json: { header, event, request, response },
       xml: xml,
@@ -1005,15 +1007,15 @@ const parseHttpBody = (optns) => {
 
         // deserialize ussd push result
         return deserializeResult(raw, (error, result) => {
-          request.body = result ? result : raw;
+          request.body = result ? result : {};
           // TODO add timestamps based on status
+          // TODO add deserialize errors to response results
           return next();
         });
       }
 
       // back-off on deserializing error
       catch (error) {
-        // TODO swallow errors and add them to response results
         return next(error);
       }
     }

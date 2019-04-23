@@ -62,8 +62,9 @@ describe('tz mpesa ussd push - parse body', () => {
       .end((error, response) => {
         expect(error).to.not.exist;
         expect(response.body).to.exist;
-        const { json } = response.body;
+        const { isSuccessful, json } = response.body;
         const { header, request } = json;
+        expect(isSuccessful).to.exist.and.to.be.true;
         expect(header).to.exist;
         expect(header).to.be.an('object');
         expect(header).to.be.eql({ eventId: 1 });
