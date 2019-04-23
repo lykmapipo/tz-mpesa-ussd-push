@@ -69,11 +69,17 @@ describe('tz mpesa ussd push - charge', () => {
       reference: 'A5FK3170',
       date: moment('2019020804', 'YYYYMMDDHH').toDate()
     };
-    charge(options, (error, response, body) => {
+    charge(options, (error, response) => {
       expect(error).to.not.exist;
       expect(response).to.exist;
-      expect(body).to.exist;
-      expect(response).to.be.eql({
+      const {
+        session,
+        transaction,
+        token,
+        reference,
+        json
+      } = response;
+      expect(json).to.be.eql({
         header: { eventId: 40009 },
         event: {
           code: 3,
@@ -100,10 +106,11 @@ describe('tz mpesa ussd push - charge', () => {
           responseCode: 0
         }
       });
-      expect(body).to.be.eql({
-        sessionId: '744a986aeee4433fdf1b2',
-        transactionId: 'e4245ff7a2154b59a2a5e778c2806712',
-        reference: '580FBEBAF2F9FF43E0540208206B0EEF'
+      expect({ session, transaction, token, reference }).to.be.eql({
+        session: '744a986aeee4433fdf1b2',
+        transaction: 'e4245ff7a2154b59a2a5e778c2806712',
+        token: '580FBEBAF2F9FF43E0540208206B0EEF',
+        reference: 'A5FK3170'
       });
       done(error, response);
     });

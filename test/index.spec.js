@@ -203,7 +203,8 @@ describe('tz mpesa ussd push', () => {
     deserialize(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      const { header, request } = payload;
+      const { json } = payload;
+      const { header, request } = json;
       expect(header).to.exist;
       expect(header).to.be.an('object');
       expect(request).to.exist;
@@ -284,12 +285,11 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it.only('should deserialize login response to json', done => {
+  it('should deserialize login response to json', done => {
     const xml = readFile('login_response.xml');
     deserializeLogin(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      console.log('login', payload);
       const {
         transaction,
         session,
@@ -339,12 +339,11 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it.only('should deserialize transaction response to json', done => {
+  it('should deserialize transaction response to json', done => {
     const xml = readFile('transaction_response.xml');
     deserializeTransaction(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      console.log('charge', payload);
       const { transaction, reference, token, json, xml } = payload;
       const { header, event, request, response } = json;
       expect(transaction).to.exist;
@@ -394,12 +393,11 @@ describe('tz mpesa ussd push', () => {
     });
   });
 
-  it.only('should deserialize transaction result to json', done => {
+  it('should deserialize transaction result to json', done => {
     const xml = readFile('transaction_result.xml');
     deserializeResult(xml, (error, payload) => {
       expect(error).to.not.exist;
       expect(payload).to.exist;
-      console.log('result', payload);
       const { receipt, status, json } = payload;
       const { header, request } = json;
       expect(receipt).to.exist;

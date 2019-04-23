@@ -57,11 +57,11 @@ describe('tz mpesa ussd push - login', () => {
     }).reply(200, responseXml);
 
     const credentials = { username: '123000', password: '123@123' };
-    login(credentials, (error, response, body) => {
+    login(credentials, (error, response) => {
       expect(error).to.not.exist;
       expect(response).to.exist;
-      expect(body).to.exist;
-      expect(response).to.be.eql({
+      const { session, transaction, json } = response;
+      expect(json).to.be.eql({
         header: { eventId: 2500 },
         event: {
           code: 3,
@@ -72,9 +72,9 @@ describe('tz mpesa ussd push - login', () => {
         request: { username: 123000, password: '123@123' },
         response: { sessionId: '744a986aeee4433fdf1b2' }
       });
-      expect(body).to.be.eql({
-        transactionId: '504830a4f038cb842960cc',
-        sessionId: '744a986aeee4433fdf1b2'
+      expect({ session, transaction }).to.be.eql({
+        session: '744a986aeee4433fdf1b2',
+        transaction: '504830a4f038cb842960cc'
       });
       done(error, response);
     });

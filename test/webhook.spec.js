@@ -62,17 +62,24 @@ describe('tz mpesa ussd push - parse body', () => {
       .end((error, response) => {
         expect(error).to.not.exist;
         expect(response.body).to.exist;
-        const { header, request } = response.body;
+        const { json } = response.body;
+        const { header, request } = json;
         expect(header).to.exist;
         expect(header).to.be.an('object');
         expect(header).to.be.eql({ eventId: 1 });
         expect(request).to.exist;
         expect(request).to.be.an('object');
-        expect(response.body).to.be.eql({
+        expect(json).to.be.eql({
           header: { eventId: 1 },
           event: {},
           request: {
-            transactionStatus: 'USSDCallbackCancel',
+            resultType: 'Completed',
+            resultCode: 0,
+            resultDesc: 'Success',
+            transactionStatus: 'Success',
+            originatorConversationId: 'N/A',
+            conversationId: 'Z9E6027IJ50M',
+            transId: 'Z9E6027IJ50M',
             businessNumber: 888888,
             currency: 'TZS',
             amount: 1500,

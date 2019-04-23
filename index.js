@@ -854,13 +854,8 @@ const login = (options, done) => {
       // back off on error
       if (error) { return next(error); }
 
-      // prepare simplified body
-      const transactionId = _.get(payload, 'event.transactionId');
-      const sessionId = _.get(payload, 'response.sessionId');
-      const body = { transactionId, sessionId };
-
       // continue
-      return next(error, payload, body);
+      return next(error, payload);
     });
   };
 
@@ -908,21 +903,20 @@ const charge = (options, done) => {
   // issue login request
   const issueLoginRequest = next => login(options, next);
 
-  // prepare ssl options
-  const prepareSSLOptions = (payload, sessionId, next) => {
-    const sslOptions = readSSLOptions(options);
-    return next(null, payload, sessionId, sslOptions);
-  };
-
-
   // prepare request xml payload
-  const prepareChargeRequest = (response, body, next) => {
+  const prepareChargeRequest = (response, next) => {
     // prepare transaction
-    const { sessionId } = body;
+    const { session: sessionId } = response;
     const transaction = _.merge({}, { sessionId }, options);
     serializeTransaction(transaction, (error, payload) => {
       next(error, payload, sessionId);
     });
+  };
+
+  // prepare ssl options
+  const prepareSSLOptions = (payload, sessionId, next) => {
+    const sslOptions = readSSLOptions(options);
+    return next(null, payload, sessionId, sslOptions);
   };
 
   // issue request
@@ -951,12 +945,10 @@ const charge = (options, done) => {
       if (error) { return next(error); }
 
       // prepare simplified body
-      const transactionId = _.get(payload, 'event.transactionId');
-      const reference = _.get(payload, 'response.insightReference');
-      const body = { sessionId, transactionId, reference };
+      payload.session = sessionId;
 
       // continue
-      return next(error, payload, body);
+      return next(error, payload);
     });
   };
 
@@ -1014,6 +1006,7 @@ const parseHttpBody = (optns) => {
         // deserialize ussd push result
         return deserializeResult(raw, (error, result) => {
           request.body = result ? result : raw;
+          // TODO add timestamps based on status
           return next();
         });
       }
