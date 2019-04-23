@@ -34,7 +34,7 @@ charge(options, (error, response) => {
 app.all('/v1/webhooks/tz/mpesa/ussd-push', parseHttpBody(), (request, response, next) => {
 // => { 
 // =>  transaction: ..., token: ..., reference: ..., 
-// =>  receipt: ..., status: ..., result: { ... } 
+// =>  receipt: ..., status: ..., result: { ... }, isSuccessful: true 
 // => }
 });
 ```
