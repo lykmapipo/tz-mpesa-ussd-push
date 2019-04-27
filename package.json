@@ -51,10 +51,10 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.16.0",
+    "@lykmapipo/common": ">=0.17.0",
     "@lykmapipo/env": ">=0.7.3",
     "async": ">=2.6.2",
-    "body-parser": ">=1.18.3",
+    "body-parser": ">=1.19.0",
     "lodash": ">=4.17.11",
     "moment": ">=2.24.0",
     "paywell-xml": ">=0.1.0",
