@@ -36,7 +36,7 @@ const readFile = path => {
 };
 
 
-describe('tz mpesa ussd push', () => {
+describe('tz mpesa ussd push - features', () => {
   const BASE_URL = 'https://ussd.vodacom.io';
   const LOGIN_PATH = '/transactions';
   const REQUEST_PATH = '/transactions';
