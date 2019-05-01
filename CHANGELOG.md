@@ -1,3 +1,43 @@
+#### 0.6.1 (2019-05-01)
+
+##### Chores
+
+* **.npmrc:**  prevent npm version to commit and tag version ([86a2a0cd](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/86a2a0cd5ba4feb1e20dcce080dceb981326c0d7))
+* **deps:**  force latest version & audit fix ([dc9179c3](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/dc9179c3c659bb034028cc2dc09991d9deb3600b))
+* **dependencies:**  force latest versions ([67c86a71](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/67c86a7117d033a19e45ef89f0aeb6ca18006f0c))
+* **release:**  generate latest changelog ([f17e9eb0](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/f17e9eb0641f414dc875371bd48ced0c005a8d05))
+*  force latest node in travis ([beae2956](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/beae2956250944947ba5e030555856cbfedbed28))
+*  force latest dependencies ([4868d8dd](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/4868d8dde57e3fdcc84119c1977f5fb8fc6f7b29))
+
+##### Documentation Changes
+
+*  update result success details ([21eedae3](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/21eedae38b8ee159a6930a153d7ec0f0fbc0e427))
+*  update usage docs ([c8afd675](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/c8afd675e8867f395606efbb663b63c2fbe1ae83))
+
+##### New Features
+
+*  add isSuccessful on parsed response & result ([a20cf66f](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/a20cf66f7f9b2c0f8265cddcf8e4aadccf621cf7))
+*  reformat parsed response ([c9abea8f](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/c9abea8fb7f8d05fc47f7f6547b1b20cd145ee20))
+*  introduce initial normalized response ([24ffb374](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/24ffb3745a041b5558b32133eeedd2e2d6fac590))
+*  add code, type & description on errors ([dc754edb](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/dc754edb1d1ef5d9552a66dd965d4a7e2cdda7aa))
+*  handle gateway server fault response ([e675ec3c](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/e675ec3c25a7fef730e28b680db19d55e9c99fab))
+*  handle gatewat client fault response ([bb88b379](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/bb88b379369d8c85a542c4e90c9e61729dc3871b))
+*  add default command on info ([c14cfc29](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/c14cfc2967cd422620e8a5fd01f8e16f69ecbda3))
+*  expose client information ([32a03fd1](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/32a03fd161da898c1706c10855071cfc47abaecc))
+*  allow custom commands on parse options ([0b873f85](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/0b873f85968a18f3af2ad8fed2068e7974c68bfa))
+*  allow number and name for businessNumber and businessName ([0219950b](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/0219950b7272cce73fc2080d7cbf6c4bf38e1b09))
+*  expose machine readable gateway name ([8e8bdfc4](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/8e8bdfc4c8a5567140eafa3fc3f7d4b8669d81c6))
+
+##### Tests
+
+* **index:**  update context name ([9472840c](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/9472840cb3ebffb018e2fcb292e8ed9c3b3ea697))
+* **fixture:**
+  *  add client fault response payload ([c6779c0e](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/c6779c0e6461273406ff53de8a7d48491798953c))
+  *  add server fault response payload ([30ed8fd8](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/30ed8fd863a85b918de402d0809ffdb9a29178cd))
+  *  add result expired payload ([ea6eebc4](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/ea6eebc4a882957a6442e5ed330494d4f585e827))
+  *  add result cancelled payload ([54b758c4](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/54b758c4378e8694b98def67b644272580c60e85))
+  *  add result success payload ([24038bee](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/24038bee2bb371116d0086fafe3a533ef7c4ea56))
+
 #### 0.6.0 (2019-04-23)
 
 ##### Chores
