@@ -37,8 +37,8 @@
   },
   "homepage": "https://github.com/lykmapipo/tz-mpesa-ussd-push",
   "devDependencies": {
-    "@lykmapipo/express-common": "^0.17.1",
-    "@lykmapipo/include": "^0.2.2",
+    "@lykmapipo/express-common": "^0.17.3",
+    "@lykmapipo/include": "^0.2.4",
     "chai": "^4.2.0",
     "grunt": "^1.0.4",
     "grunt-contrib-jshint": "^2.1.0",
@@ -51,9 +51,9 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.17.3",
-    "@lykmapipo/env": ">=0.7.5",
-    "async": ">=2.6.2",
+    "@lykmapipo/common": ">=0.17.5",
+    "@lykmapipo/env": ">=0.7.7",
+    "async": ">=3.0.0",
     "body-parser": ">=1.19.0",
     "lodash": ">=4.17.11",
     "moment": ">=2.24.0",
