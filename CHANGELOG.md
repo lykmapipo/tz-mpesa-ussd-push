@@ -1,3 +1,9 @@
+#### 0.6.4 (2019-06-10)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([4afd6d17](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/4afd6d176d9dab3cef260958041c7637e1699371))
+
 #### 0.6.3 (2019-05-20)
 
 ##### Chores
