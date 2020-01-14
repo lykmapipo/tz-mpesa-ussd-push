@@ -1,6 +1,6 @@
 {
   "name": "@lykmapipo/tz-mpesa-ussd-push",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Vodacom Tanzania USSD Push API Client",
   "main": "index.js",
   "scripts": {
