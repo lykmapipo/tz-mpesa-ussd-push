@@ -6,7 +6,6 @@ const { readFileSync } = require('fs');
 const _ = require('lodash');
 const moment = require('moment');
 const { expect } = require('chai');
-const { include } = require('@lykmapipo/include');
 const {
   WEBHOOK_PATH,
   country,
@@ -26,7 +25,7 @@ const {
   deserializeTransaction,
   deserializeResult,
   readSSLOptions
-} = include(__dirname, '..');
+} = require('../');
 
 
 /* helpers */

@@ -7,8 +7,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const nock = require('nock');
 const { expect } = require('chai');
-const { include } = require('@lykmapipo/include');
-const { charge } = include(__dirname, '..');
+const { charge } = require('../');
 
 
 /* helpers */

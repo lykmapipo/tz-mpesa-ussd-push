@@ -6,8 +6,7 @@ const { readFileSync } = require('fs');
 const _ = require('lodash');
 const nock = require('nock');
 const { expect } = require('chai');
-const { include } = require('@lykmapipo/include');
-const { login } = include(__dirname, '..');
+const { login } = require('../');
 
 
 /* helpers */

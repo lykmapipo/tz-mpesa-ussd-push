@@ -6,10 +6,9 @@ const { readFileSync } = require('fs');
 // const _ = require('lodash');
 const moment = require('moment');
 const request = require('supertest');
-const app = require('@lykmapipo/express-common');
+const { app } = require('@lykmapipo/express-common');
 const { expect } = require('chai');
-const { include } = require('@lykmapipo/include');
-const { parseHttpBody } = include(__dirname, '..');
+const { parseHttpBody } = require('../');
 
 
 /* helpers */
