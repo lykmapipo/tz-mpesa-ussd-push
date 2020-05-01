@@ -46,18 +46,18 @@
     "grunt-mocha-test": "^0.13.3",
     "handlebars": "^4.7.6",
     "jshint-stylish": "^2.2.1",
-    "mocha": "^7.1.1",
+    "mocha": "^7.1.2",
     "nock": "^12.0.3",
     "supertest": "^4.0.2"
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.32.1",
-    "@lykmapipo/env": ">=0.17.3",
+    "@lykmapipo/common": ">=0.33.1",
+    "@lykmapipo/env": ">=0.17.4",
     "async": ">=3.2.0",
     "body-parser": ">=1.19.0",
     "lodash": ">=4.17.15",
-    "moment": ">=2.24.0",
+    "moment": ">=2.25.1",
     "paywell-xml": ">=0.1.0",
     "request": ">=2.88.2",
     "xml2js": ">=0.4.23"
