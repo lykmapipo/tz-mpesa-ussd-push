@@ -52,12 +52,12 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.33.1",
-    "@lykmapipo/env": ">=0.17.4",
+    "@lykmapipo/common": ">=0.33.2",
+    "@lykmapipo/env": ">=0.17.5",
     "async": ">=3.2.0",
     "body-parser": ">=1.19.0",
     "lodash": ">=4.17.15",
-    "moment": ">=2.25.1",
+    "moment": ">=2.25.3",
     "paywell-xml": ">=0.1.0",
     "request": ">=2.88.2",
     "xml2js": ">=0.4.23"
