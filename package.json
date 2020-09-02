@@ -48,15 +48,15 @@
     "handlebars": "^4.7.6",
     "jshint-stylish": "^2.2.1",
     "minimist": "^1.2.5",
-    "mocha": "^8.1.1",
+    "mocha": "^8.1.3",
     "nock": "^13.0.4",
     "supertest": "^4.0.2",
     "websocket-extensions": "^0.1.4"
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.38.3",
-    "@lykmapipo/env": ">=0.17.17",
+    "@lykmapipo/common": ">=0.39.1",
+    "@lykmapipo/env": ">=0.17.18",
     "async": ">=3.2.0",
     "body-parser": ">=1.19.0",
     "lodash": ">=4.17.20",
