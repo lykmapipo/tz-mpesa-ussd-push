@@ -1,3 +1,11 @@
+#### 0.6.34 (2020-12-17)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([4456ae51](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/4456ae51c2e34959392fb1fdc00f588238869f8d))
+  *  bump ini from 1.3.5 to 1.3.7 ([ad770ff9](https://github.com/lykmapipo/tz-mpesa-ussd-push/commit/ad770ff9caa9c02f6be78cc4eb0134440230db39))
+
 #### 0.6.33 (2020-12-06)
 
 ##### Chores
