@@ -55,8 +55,8 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@lykmapipo/common": ">=0.42.5",
-    "@lykmapipo/env": ">=0.17.25",
+    "@lykmapipo/common": ">=0.42.6",
+    "@lykmapipo/env": ">=0.17.26",
     "async": ">=3.2.0",
     "body-parser": ">=1.19.0",
     "lodash": ">=4.17.20",
